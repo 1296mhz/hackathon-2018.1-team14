@@ -18,13 +18,14 @@ export default class Tank extends Phaser.Sprite {
     this.body.maxVelocity.setTo(400, 400);
     this.body.collideWorldBounds = true;
 
-    this.animations.add('move', ['tank1', 'tank2', 'tank3', 'tank4', 'tank5', 'tank6'], 20, true);
+    // this.animations.add('move', ['tank1', 'tank2', 'tank3', 'tank4', 'tank5', 'tank6'], 20, true);
 
-    this.shadow = this.game.add.sprite(x, y, 'tanks', 'shadow');
-    this.turret = this.game.add.sprite(x, y, 'tanks', 'turret');
+    //this.shadow = this.game.add.sprite(x, y, 'tanks', 'shadow');
+    this.turret = this.game.add.sprite(x, y, 'textures', 'head.png');
 
-    this.shadow.anchor.set(0.5);
-    this.turret.anchor.set(0.3, 0.5);
+    
+   // this.shadow.anchor.set(0.5);
+    this.turret.anchor.set(0.5, 0.5);
 
     this.bringToTop();
     this.turret.bringToTop();
@@ -34,7 +35,6 @@ export default class Tank extends Phaser.Sprite {
   work_update() {
     const server = this.game.server;
     const role = server.getMyRole();
-
     switch(role) {
       case "driver": {
         this._updateDriver();
@@ -77,9 +77,9 @@ export default class Tank extends Phaser.Sprite {
     }
 
     //  Position all the parts and align rotations
-    this.shadow.x = this.x;
-    this.shadow.y = this.y;
-    this.shadow.rotation = this.rotation;
+   // this.shadow.x = this.x;
+   // this.shadow.y = this.y;
+  //  this.shadow.rotation = this.rotation;
 
     this.turret.x = this.x;
     this.turret.y = this.y;
@@ -100,9 +100,9 @@ export default class Tank extends Phaser.Sprite {
     this.y = data.y;
 
     // update nested
-    this.shadow.x = this.x;
-    this.shadow.y = this.y;
-    this.shadow.rotation = this.rotation;
+  //  this.shadow.x = this.x;
+  //  this.shadow.y = this.y;
+  //  this.shadow.rotation = this.rotation;
 
     this.turret.x = this.x;
     this.turret.y = this.y;

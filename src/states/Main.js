@@ -12,11 +12,18 @@ export default class Main extends Phaser.State {
     // Enable arcade physics.
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
+    this.game.world.setBounds(-1000, -1000, 2000, 2000);
+
+    const dpr = Math.round(window.devicePixelRatio);
+
     // Add background tile.
-    this.land = this.game.add.tileSprite(-5000, -5000, 10000, 10000, 'earth');
+    this.land = this.game.add.tileSprite(
+      0, 0, 
+      window.innerWidth * dpr, window.innerHeight * dpr,
+     'earth');
     this.land.fixedToCamera = true;
 
-    
+
     this.initBulletGroups();
 
     // Add a player to the game.
@@ -24,16 +31,16 @@ export default class Main extends Phaser.State {
       game: this.game,
       x: this.game.world.centerX - 100,
       y: this.game.world.centerY - 100,
-      key: 'tanks',
-      frame: 'tank1',
+      key: 'textures',
+      frame: 'tank_1.png',
     });
 
     this.oponent = new Tank({
       game: this.game,
       x: this.game.world.centerX + 100,
       y: this.game.world.centerY + 100,
-      key: 'enemy-tanks',
-      frame: 'tank1',
+      key: 'textures',
+      frame: 'tank_2.png',
     });
 
     const server = this.game.server;
@@ -50,6 +57,10 @@ export default class Main extends Phaser.State {
     server.on('update_op_gunner', (data)=>{
       this.oponent.setGunnerUpdate(data);
     });
+
+    this.game.camera.follow(this.player);
+    this.game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300);
+    this.game.camera.focusOnXY(0, 0);
 
     // Setup listener for window resize.
     window.addEventListener('resize', throttle(this.resize.bind(this), 50), false);
@@ -69,6 +80,11 @@ export default class Main extends Phaser.State {
    * Handle actions in the main game loop.
    */
   update() {
+
+    this.land.tilePosition.x = -this.game.camera.x;
+    this.land.tilePosition.y = -this.game.camera.y;
+
+
     this.player.work_update();
   }
 

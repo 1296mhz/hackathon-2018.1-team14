@@ -220,7 +220,7 @@ export default class Main extends Phaser.State {
       }
     });
     
-    // 
+    // test
 
     this.game.camera.follow(this.player);
 

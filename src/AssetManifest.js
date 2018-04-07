@@ -1,20 +1,23 @@
 // https://github.com/goldfire/phaser-webpack-loader/blob/master/README.md
 
 const AssetManifest = {
-  sprites: [
-    'textures.png',
-    'tanks.png',
-    'enemy-tanks.png'
+  spritesheets: [
+    'textures',
+    'tanks',
+    'enemy-tanks'
   ],
   images: [
-    'bg.png',
-    'dark_grass.png',
-    'earth.png',
-    'light_grass.png',
-    'light_sand.png',
-    'sand.png',
-    'scorched_earth.png',
-    'button_default.png'
+    'bg',
+    'dark_grass',
+    'earth',
+    'light_grass',
+    'light_sand',
+    'sand',
+    'scorched_earth',
+    'button_default'
+  ],
+  audio: [
+    'blip'
   ],
   fonts: {
     google: {

@@ -1,5 +1,5 @@
 import throttle from 'lodash.throttle';
-import Player from '../objects/Player';
+import Tank from '../objects/Tank';
 
 /**
  * Setup and display the main game state.
@@ -13,20 +13,43 @@ export default class Main extends Phaser.State {
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
     // Add background tile.
-    this.game.add.tileSprite(-5000, -5000, 10000, 10000, 'earth');
+    this.land = this.game.add.tileSprite(-5000, -5000, 10000, 10000, 'earth');
+    this.land.fixedToCamera = true;
 
-    this.cursors = game.input.keyboard.createCursorKeys();
+    
+    this.initBulletGroups();
 
     // Add a player to the game.
-    this.player = new Player({
+    this.player = new Tank({
       game: this.game,
-      x: this.game.world.centerX,
-      y: this.game.world.centerY,
+      x: this.game.world.centerX - 100,
+      y: this.game.world.centerY - 100,
       key: 'tanks',
       frame: 'tank1',
     });
 
-    this.currentSpeed = 0;
+    this.oponent = new Tank({
+      game: this.game,
+      x: this.game.world.centerX + 100,
+      y: this.game.world.centerY + 100,
+      key: 'enemy-tanks',
+      frame: 'tank1',
+    });
+
+    const server = this.game.server;
+    server.on('update_player_driver', (data)=>{
+      this.player.setDriverUpdate(data);
+    });
+    server.on('update_player_gunner', (data)=>{
+      this.player.setGunnerUpdate(data);
+    });
+
+    server.on('update_op_driver', (data)=>{
+      this.oponent.setDriverUpdate(data);
+    });
+    server.on('update_op_gunner', (data)=>{
+      this.oponent.setGunnerUpdate(data);
+    });
 
     // Setup listener for window resize.
     window.addEventListener('resize', throttle(this.resize.bind(this), 50), false);
@@ -46,40 +69,22 @@ export default class Main extends Phaser.State {
    * Handle actions in the main game loop.
    */
   update() {
+    this.player.work_update();
+  }
 
 
-    if (this.cursors.left.isDown){
-      this.player.angle -= 4;
-    }
-    else if (this.cursors.right.isDown){
-      this.player.angle += 4;
-    }
+  initBulletGroups() {
+    this.playerBullets = game.add.group();
+    this.playerBullets.enableBody = true;
+    this.playerBullets.physicsBodyType = Phaser.Physics.ARCADE;
+    this.playerBullets.createMultiple(30, 'bullet', 0, false);
+    this.playerBullets.setAll('anchor.x', 0.5);
+    this.playerBullets.setAll('anchor.y', 0.5);
+    this.playerBullets.setAll('outOfBoundsKill', true);
+    this.playerBullets.setAll('checkWorldBounds', true);
 
-    if (this.cursors.up.isDown) {
-      this.currentSpeed = 300;
-    } else {
-      if (this.currentSpeed > 0) {
-        this.currentSpeed -= 4;
-      }
-    }
-    
-    if (this.currentSpeed > 0)
-    {
-      this.game.physics.arcade.velocityFromRotation(
-        this.player.rotation, 
-        this.currentSpeed, 
-        this.player.body.velocity);
-    }
-
-    //  Position all the parts and align rotations
-    this.player.shadow.x = this.player.x;
-    this.player.shadow.y = this.player.y;
-    this.player.shadow.rotation = this.player.rotation;
-
-    this.player.turret.x = this.player.x;
-    this.player.turret.y = this.player.y;
-
-    this.player.turret.rotation = game.physics.arcade.angleToPointer(this.player.turret);
 
   }
+
+
 }

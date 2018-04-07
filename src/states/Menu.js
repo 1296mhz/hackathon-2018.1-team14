@@ -32,7 +32,6 @@ export default class Menu extends Phaser.State {
 
         this.initState(STATE_SELECT_STATE);
 
-
         const server = this.game.server;
 
         server.on('onServerState', ()=>{
@@ -42,8 +41,7 @@ export default class Menu extends Phaser.State {
             } else {
                 this.initState(this.state);
             }
-            
-        })
+        });
 
         console.log("ClientId", server.getClientID());
 
@@ -90,7 +88,7 @@ export default class Menu extends Phaser.State {
             }
             case STATE_SELECT_ROLE: {
                 this.title.setText("Select role");
-                const myCmd = server.getMyCommand();
+                const myCmd = this.select_cmd;
 
                 if(server.isVacant(myCmd, "driver")) {
                     this.addButton("Driver",  "select_role_driver");
@@ -100,9 +98,9 @@ export default class Menu extends Phaser.State {
                     this.addButton("Gunner", "select_role_gunner");
                 }
 
-                if(server.isVacant(myCmd, "сommander")) {
-                    this.addButton("Сommander", "select_role_сommander");
-                }
+           //     if(server.isVacant(myCmd, "сommander")) {
+           //         this.addButton("Сommander", "select_role_сommander");
+           //     }
                 
                 break;
             }
@@ -165,21 +163,27 @@ export default class Menu extends Phaser.State {
             case "select_role_driver": { 
                 this.select_role = "driver";
                 this.clearButtons(); 
-                server.join(this.select_cmd, this.select_role);
+                this.game.state.start('GameWait');
+                setTimeout(()=>{
+                    server.join(this.select_cmd, this.select_role);
+                },500)
                 break; 
             }
             case "select_role_gunner": { 
                 this.select_role = "gunner";
                 this.clearButtons(); 
-                server.join(this.select_cmd, this.select_role);
+                this.game.state.start('GameWait');
+                setTimeout(()=>{
+                    server.join(this.select_cmd, this.select_role);
+                },500)
                 break; 
             }
-            case "select_role_сommander": { 
+           /* case "select_role_сommander": { 
                 this.select_role = "сommander";
                 this.clearButtons(); 
                 server.join(this.select_cmd, this.select_role);
                 break; 
-            }
+            }*/
         }
     }
 }

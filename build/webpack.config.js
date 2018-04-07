@@ -66,9 +66,17 @@ const config = {
         use: ['expose-loader?Phaser'],
       },
       {
-        test: /\.(png|jpg|gif|svg|pvr|pkm)$/,
+        test: /\.(png|jpg|gif|svg|pvr|pkm|mp3)$/,
         use: ['file-loader?name=assets/[name].[ext]?[hash]'],
       },
+    /*  {
+        test: /\.mp3$/,
+        use: 'file-loader?hash=sha512&digest=hex&name=assets/[name].[ext]?[hash]',
+      },
+      {
+        test: /\.ogg$/,
+        use: 'file-loader?hash=sha512&digest=hex&name=assets/[name].[ext]?[hash]',
+      },*/
       {
         test: /\.css$/,
         use: ExtractTextPlugin.extract({

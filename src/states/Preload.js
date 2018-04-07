@@ -1,5 +1,8 @@
-import WebpackLoader from 'phaser-webpack-loader';
+// import WebpackLoader from 'phaser-webpack-loader';
+import ManifestLoader from 'phaser-manifest-loader';
 import AssetManifest from '../AssetManifest';
+
+const req = require.context('../assets', true, /.*\.png|json|ttf|woff|woff2|xml|mp3|jpg|ogg$/);
 
 /**
  * Preload the game and display the loading screen.
@@ -21,12 +24,13 @@ export default class Preload extends Phaser.State {
     // Fix CORS issues with the loader and allow for unlimited parallel downloads.
     this.game.load.crossOrigin = 'anonymous';
     this.game.load.maxParallelDownloads = Infinity;
-
+    this.game.sound.usingWebAudio = true;
+    
     
     const server = this.game.server;
-
+/*
     // Begin loading all of the assets.
-    this.game.plugins.add(WebpackLoader, AssetManifest, postfix)
+    this.game.plugins.add(ManifestLoader, AssetManifest, postfix)
       .load()
       .then(() => {
         if(server.getMyCommand()) {
@@ -35,6 +39,16 @@ export default class Preload extends Phaser.State {
           this.game.state.start('Menu');
         }
       });
+*/    
+
+  this.game.plugins.add(ManifestLoader, req).loadManifest(AssetManifest).then(()=>{
+    if(server.getMyCommand()) {
+      this.game.state.start('GameWait');
+    } else {
+      this.game.state.start('Menu');
+    }
+  })
+
   }
 
   /**

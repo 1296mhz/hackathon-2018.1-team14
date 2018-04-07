@@ -81,11 +81,19 @@ class ClientState {
         });
 
         this.socket.on('join', (msg)=>{
-            console.log(msg)
             game_state.join(msg.cmd, this);
+            this.cmd = msg.cmd;
             this.role = msg.role;
             broadcast('serverState', this.game_state.toJSON());
         });
+
+        this.socket.on('updateDriver', (msg)=>{
+            broadcast('updateDriverFromServer', msg);
+        });
+
+        this.socket.on('updateGunner', (msg)=>{
+            broadcast('updateGunnerFromServer', msg);
+        });     
     }
 
     

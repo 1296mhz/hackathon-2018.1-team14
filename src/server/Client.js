@@ -16,6 +16,32 @@ export default class Client extends EventEmitter {
         this.socket.on("serverState", (data)=>{
             this.onServerState(data);
         });
+
+        this.socket.on("updateDriverFromServer", (data)=>{
+            if(data.cmd === this.getMyCommand()) {
+                // Update command tank
+                if(this.getMyRole() !== "driver") {
+                    this.emit('update_player_driver', data);
+                }
+            } else {
+                // Update oponent tank
+                this.emit('update_op_driver', data);
+            }
+        });
+
+        this.socket.on("updateGunnerFromServer", (data)=>{
+            // this.onServerState(data);
+
+            if(data.cmd === this.getMyCommand()) {
+                // Update command tank
+                if(this.getMyRole() !== "gunner") {
+                    this.emit('update_player_gunner', data);
+                }
+            } else {
+                // Update oponent tank
+                this.emit('update_op_gunner', data);
+            }
+        });   
     }
 
     onConnected() {
@@ -25,19 +51,21 @@ export default class Client extends EventEmitter {
     onServerState(data) {
         console.log("onServerState", data)
         this.state = data;
+        
         this.emit('onServerState', data);
     }
 
     isCommandFull(cmd) {
         console.log(this.state)
         if(cmd ==="red") {
-            return this.state.red.length >= 3;
+            return this.state.red.length >= 2;
         } else {
-            return this.state.blue.length >= 3;
+            return this.state.blue.length >= 2;
         }
     }
 
     isVacant(cmd, role) {
+        console.log("isVacant", cmd, role, this.state)
         if(cmd ==="red") {
             return _.findIndex(this.state.red, {role : role}) === -1;
         } else {
@@ -56,8 +84,21 @@ export default class Client extends EventEmitter {
         }
     } 
 
+    getMyRole() {
+        const inRed = _.findWhere(this.state.red, { id : this.socket.id });
+        if(inRed) {
+         //   console.log("inRed",inRed)
+            return inRed.role;
+        }
+        const inBlue = _.findWhere(this.state.blue, { id : this.socket.id });
+        if(inBlue) {
+          //  console.log("inBlue", inBlue)
+            return inBlue.role;
+        }
+    }
+
     isGameReady() {
-        return this.state.red.length >= 3 && this.state.blue.length >= 3;
+        return this.state.red.length >= 2 && this.state.blue.length >= 2;
     }
 
 
@@ -70,10 +111,29 @@ export default class Client extends EventEmitter {
     }
 
     join(cmd, role) {
-        console.log("Client:join", cmd,role)
         this.socket.emit("join", {
             cmd: cmd,
             role: role
+        });
+    }
+
+    updateDriver(x, y, angle) {
+        this.socket.emit("updateDriver", {
+            id : this.socket.id,
+            x: x,
+            y: y,
+            angle: angle,
+            role : this.getMyRole(),
+            cmd : this.getMyCommand()
+        });
+    }
+
+    updateGunner(angle) {
+        this.socket.emit("updateGunner", {
+            id : this.socket.id,
+            angle: angle,
+            role : this.getMyRole(),
+            cmd : this.getMyCommand()
         });
     }
 };

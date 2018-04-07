@@ -20,7 +20,7 @@ export default class GameWait extends Phaser.State {
         const server = this.game.server;
 
         server.on('onServerState', ()=>{
-            console.log("onServerState");
+            console.log("onServerState", server.state);
             if(server.isGameReady()) {
                 this.game.state.start('Main');
             }

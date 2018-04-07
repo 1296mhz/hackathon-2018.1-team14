@@ -31,7 +31,6 @@ class Game extends Phaser.Game {
       enableDebug: process.env.NODE_ENV === 'development',
     });
 
-
     this.server = new Client("http://localhost:7788/");
     this.server.connect();
 

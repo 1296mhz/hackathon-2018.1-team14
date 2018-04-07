@@ -39,7 +39,6 @@ class Game extends Phaser.Game {
     const url = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '') + "/";
 
     this.server = new Client(url);
-    console.log(this.server);
     this.server.connect();
 
     // Setup the different game states.

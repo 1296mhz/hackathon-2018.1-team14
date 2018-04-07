@@ -25,8 +25,15 @@ export default class Tank extends Phaser.Sprite {
 
     // this.animations.add('move', ['tank1', 'tank2', 'tank3', 'tank4', 'tank5', 'tank6'], 20, true);
 
-    //this.shadow = this.game.add.sprite(x, y, 'tanks', 'shadow');
+    //this.shadow = this.game.add.sprite(x, y, 'tanks', 'shadow')
     this.turret = this.game.add.sprite(x, y, 'textures', 'head.png');
+    console.log(this);
+    this.body.width = 64;
+    this.body.height = 64;
+    this.body.sourceWidth = 64;
+    this.body.sourceHeight = 64;
+    this.body.offset.x = 32;
+    this.body.offset.y = 32;
 
     this.fireRate = 500;
     this.nextFire = 0;

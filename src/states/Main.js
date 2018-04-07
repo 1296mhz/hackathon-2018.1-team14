@@ -2,7 +2,7 @@ import throttle from 'lodash.throttle';
 import Tank from '../objects/Tank';
 import Crystal from '../objects/Crystal';
 import Crysalis from '../objects/Crysalis';
-import Mob from '../objects/Mob';
+//import Mob from '../objects/Mob';
 
 /**
  * Setup and display the main game state.
@@ -20,8 +20,10 @@ export default class Main extends Phaser.State {
     this.game.load.image('bullet', 'dist/assets/bullet.png');
     this.stand_music = this.game.add.audio('tank-stand');
     this.move_music = this.game.add.audio('tank-moves');
+    this.coin_music = this.game.add.audio('electro-bomb');
     this.stand_music.allowMultiple = false;
     this.move_music.allowMultiple = false;
+    this.coin_music.allowMultiple = false;
   }
   /**
    * Setup all objects, etc needed for the main game state.
@@ -50,8 +52,6 @@ export default class Main extends Phaser.State {
     const server = this.game.server;
 
 
-    this.land.setCollisionByExclusion([], true, this.obstacles);
-    this.land.setCollisionByExclusion([], true, this.buildings);
 
     this.maxMobs = 5;
     this.maxCrystals = 10;
@@ -62,7 +62,7 @@ export default class Main extends Phaser.State {
 
 
     this.objects = this.game.add.physicsGroup();
-    this.land.createFromObjects('objects', '', 'fill', 1, true, false, this.objects, Phaser.Sprite, false);
+    this.land.createFromObjects('buildings', '', 'grass', 1, true, false, this.objects, Phaser.Sprite, false);
     this.objects.forEach((object) => {
       object.body.immovable = true;
       object.alpha = 0;
@@ -182,7 +182,7 @@ export default class Main extends Phaser.State {
     });
 
 
-    server.on('spawnMobFromServer', (data)=>{
+    /*server.on('spawnMobFromServer', (data)=>{
       const mob = new Crystal({
         game: this.game,
         x: data.x,
@@ -191,7 +191,7 @@ export default class Main extends Phaser.State {
         frame: 'creep_1_1_b.png'
       });
       this.mobs.push(mob);
-    });
+    });*/
 
     // 
 
@@ -256,6 +256,7 @@ export default class Main extends Phaser.State {
 
       this.game.physics.arcade.overlap(this.player, c, (tank, bullet)=>{
         bullet.kill();
+        this.coin_music.play();
         if(server.isMasterClient()) {
           server.takeCrysalis(server.getMyCommand(),{
             x : c.x,
@@ -266,13 +267,12 @@ export default class Main extends Phaser.State {
 
     });
 
-    this.game.physics.arcade.collide(this.player, this.buildings);
-    this.game.physics.arcade.collide(this.player, this.obstacles);
-    this.game.physics.arcade.collide(this.player, this.lake, (player) => {
-      console.log('collide')
+    this.game.physics.arcade.collide(this.player, this.objects);
+    this.game.physics.arcade.collide(this.player.bullets, this.objects, (bullet) => {
+      bullet.kill();
     });
-    this.game.physics.arcade.overlap(this.player, this.lake, (player) => {
-      console.log('overlap')
+    this.game.physics.arcade.collide(this.oponent.bullets, this.objects, (bullet) => {
+      bullet.kill();
     });
 
 

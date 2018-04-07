@@ -18,7 +18,9 @@ export default class Main extends Phaser.State {
     this.game.load.image('tilels', 'dist/assets/tilels.png');
     this.game.load.image('bullet', 'dist/assets/bullet.png');
     this.stand_music = this.game.add.audio('tank-stand');
+    this.move_music = this.game.add.audio('tank-moves');
     this.stand_music.allowMultiple = false;
+    this.move_music.allowMultiple = false;
   }
   /**
    * Setup all objects, etc needed for the main game state.
@@ -248,17 +250,13 @@ export default class Main extends Phaser.State {
 
     this.game.physics.arcade.collide(this.player, this.buildings);
     this.game.physics.arcade.collide(this.player, this.obstacles);
-<<<<<<< HEAD
     this.game.physics.arcade.collide(this.player, this.lake, (player) => {
       console.log('collide')
     });
     this.game.physics.arcade.overlap(this.player, this.lake, (player) => {
       console.log('overlap')
     });
-    const server = this.game.server;
-=======
 
->>>>>>> 7226f95d97d285e569a35c5f24d93042def3cdfd
 
     this.game.physics.arcade.overlap(this.oponent.bullets, this.player, (tank, bullet)=>{
       bullet.kill();
@@ -274,14 +272,15 @@ export default class Main extends Phaser.State {
       }
     }, null, this);
 
-<<<<<<< HEAD
     if(this.player.currentSpeed === 0 && this.player.velocity == 0) {
       console.log(this.player.velocity);
+      this.move_music.stop
       this.stand_music.play('', 0, 0.5, false, false);
     } else {
       console.log('stop' + this.player.velocity);
       this.stand_music.stop();
-=======
+      this.move_music.play('', 0, 0.5, false, false);
+    }
 
 
     if(server.isMasterClient()) {
@@ -299,9 +298,9 @@ export default class Main extends Phaser.State {
           server.spawnCrystal(Math.floor(crTile.x), Math.floor(crTile.y));
         }
       }
->>>>>>> 7226f95d97d285e569a35c5f24d93042def3cdfd
     }
 
     this.player.work_update();
   }
+
 }

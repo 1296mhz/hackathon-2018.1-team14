@@ -173,8 +173,40 @@
          "visible":true,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "name":"bases",
+         "objects":[
+                {
+                 "height":224,
+                 "id":12,
+                 "name":"baseBlue",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":233.333333333333,
+                 "x":105.333333333333,
+                 "y":1592
+                }, 
+                {
+                 "height":229.333333333333,
+                 "id":13,
+                 "name":"baseRed",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":236,
+                 "x":1610.66666666667,
+                 "y":52
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextobjectid":10,
+ "nextobjectid":14,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.1.4",

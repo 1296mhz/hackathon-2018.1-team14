@@ -81,6 +81,10 @@ const config = {
         test: /battlefield3\.json$/,
         use: ['file-loader?name=assets/[name].[ext]?[hash]'],
       },
+      {
+        test: /battlefield4\.json$/,
+        use: ['file-loader?name=assets/[name].[ext]?[hash]'],
+      },
     /*  {
         test: /\.mp3$/,
         use: 'file-loader?hash=sha512&digest=hex&name=assets/[name].[ext]?[hash]',

@@ -80,11 +80,8 @@ export default class Main extends Phaser.State {
    * Handle actions in the main game loop.
    */
   update() {
-
     this.land.tilePosition.x = -this.game.camera.x;
     this.land.tilePosition.y = -this.game.camera.y;
-
-
     this.player.work_update();
   }
 

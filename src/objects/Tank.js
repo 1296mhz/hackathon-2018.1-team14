@@ -76,11 +76,6 @@ export default class Tank extends Phaser.Sprite {
         this.body.velocity);
     }
 
-    //  Position all the parts and align rotations
-   // this.shadow.x = this.x;
-   // this.shadow.y = this.y;
-  //  this.shadow.rotation = this.rotation;
-
     this.turret.x = this.x;
     this.turret.y = this.y;
 
@@ -98,11 +93,6 @@ export default class Tank extends Phaser.Sprite {
     this.rotation = data.angle;
     this.x = data.x;
     this.y = data.y;
-
-    // update nested
-  //  this.shadow.x = this.x;
-  //  this.shadow.y = this.y;
-  //  this.shadow.rotation = this.rotation;
 
     this.turret.x = this.x;
     this.turret.y = this.y;

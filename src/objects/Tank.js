@@ -34,11 +34,31 @@ export default class Tank extends Phaser.Sprite {
     this.health = 100;
     this.maxHealth = 100;
 
+    this.crysalis = 0;
+    this.crysalisMax = 20;
+
     this.hud = Phaser.Plugin.HUDManager.create(this.game, this, 'enemyhud');
+
     this.healthHUD = this.hud.addBar(0, -64, 64, 6, this.maxHealth, 'health', this, Phaser.Plugin.HUDManager.HEALTHBAR, false);
     this.healthHUD.bar.anchor.setTo(0.5, 0.5);
 
+    this.crysHUD = this.hud.addBar(0, -72, 64, 6, this.crysalisMax, 'crysalis', this, (percent)=> {
+      if (percent <= 0.25) {
+        return '#ff7474'; //red
+      }
+      if (percent <= 0.75) {
+        return '#eaff74'; //yellow
+      }
+      return '#74ff74'; //green
+    }, false);
+    
+    this.crysHUD.bar.anchor.setTo(0.5, 0.5);
+
+
+   // this.crHUD = this.hud.addText()
+
     this.addChild(this.healthHUD.bar);
+    this.addChild(this.crysHUD.bar);
 
    // this.shadow.anchor.set(0.5);
     this.turret.anchor.set(0.5, 0.5);

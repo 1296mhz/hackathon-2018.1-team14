@@ -1,5 +1,7 @@
 import throttle from 'lodash.throttle';
 import Tank from '../objects/Tank';
+import Crystal from '../objects/Crystal';
+import Crysalis from '../objects/Crysalis';
 
 /**
  * Setup and display the main game state.
@@ -44,9 +46,14 @@ export default class Main extends Phaser.State {
 
     const server = this.game.server;
 
+    //console.log(this.base)
+
     this.land.setCollisionByExclusion([], true, this.obstacles);
     this.land.setCollisionByExclusion([], true, this.buildings);
-    
+
+    this.maxCrystals = 10;
+    this.crystals = [];
+    this.crysalis = [];
 
     this.objects = this.game.add.physicsGroup();
     this.land.createFromObjects('objects', '', 'fill', 1, true, false, this.objects, Phaser.Sprite, false);
@@ -107,7 +114,66 @@ export default class Main extends Phaser.State {
         this.oponent.health = server.state.red_data.hp;
       }
     });
-    
+
+    server.on('spawnCrystalFromServer', (data)=>{
+      const crystal = new Crystal({
+        game: this.game,
+        x: data.x,
+        y: data.y,
+        key: 'textures',
+        frame: 'crystal_1.png'
+      });
+      this.crystals.push(crystal);
+    });
+  
+    server.on('damageCrystalFromServer', (data)=>{
+      let exI = -1;
+      const pos = {};
+      for(let i = 0; i < this.crystals.length; i++) {
+        if(this.crystals[i].x == data.pos.x && this.crystals[i].y == data.pos.y) {
+          this.crystals[i].kill();
+          pos.x = data.pos.x;
+          pos.y = data.pos.y;
+          exI = i;
+          break;
+        }
+      }
+      if(exI !== -1) {
+        this.crystals.splice(exI, 1);
+        const crysal = new Crysalis({
+          game: this.game,
+          x: pos.x,
+          y: pos.y,
+          key: 'tilel16',
+          frame: 'tilel16.png'
+        });
+        this.crysalis.push(crysal);
+      }
+    });
+
+
+    server.on('takeCrysalisFromServer', (data)=>{
+      let exI = -1;
+      for(let i = 0; i < this.crysalis.length; i++) {
+        if(this.crysalis[i].x == data.pos.x && this.crysalis[i].y == data.pos.y) {
+          this.crysalis[i].kill();
+          exI = i;
+          break;
+        }
+      }
+      if(exI !== -1) {
+        this.crysalis.splice(exI, 1);
+      }
+      
+      if(server.getMyCommand() == "red") {
+        this.player.crysalis = server.state.red_data.crystal;
+        this.oponent.crysalis = server.state.blue_data.crystal;
+      } else {
+        this.player.crysalis = server.state.blue_data.crystal;
+        this.oponent.crysalis = server.state.red_data.crystal;
+      }
+
+    });
 
     this.game.camera.follow(this.player);
 
@@ -129,8 +195,60 @@ export default class Main extends Phaser.State {
    * Handle actions in the main game loop.
    */
   update() {
+    const server = this.game.server;
+
+    this.crystals.forEach((c)=>{
+      this.game.physics.arcade.collide(this.player, c);
+
+      this.game.physics.arcade.overlap(this.oponent.bullets, c, (tank, bullet)=>{
+        bullet.kill();
+        if(server.isMasterClient()) {
+           server.damageCrystal(server.getMyCommand(), {
+             x : c.x,
+             y : c.y
+           });
+        }
+      }, null, this);
+
+      this.game.physics.arcade.overlap(this.player.bullets, c, (tank, bullet)=>{
+        bullet.kill();
+        if(server.isMasterClient()) {
+          server.damageCrystal(server.getMyCommand() === "red" ? "blue" : "red",{
+            x : c.x,
+            y : c.y
+          });
+        }
+      }, null, this);
+
+    });
+
+    this.crysalis.forEach((c)=>{
+
+      this.game.physics.arcade.overlap(this.oponent, c, (tank, bullet)=>{
+        bullet.kill();
+        if(server.isMasterClient()) {
+           server.takeCrysalis(server.getMyCommand() === "red" ? "blue" : "red", {
+             x : c.x,
+             y : c.y
+           });
+        }
+      }, null, this);
+
+      this.game.physics.arcade.overlap(this.player, c, (tank, bullet)=>{
+        bullet.kill();
+        if(server.isMasterClient()) {
+          server.takeCrysalis(server.getMyCommand(),{
+            x : c.x,
+            y : c.y
+          });
+        }
+      }, null, this);
+
+    });
+
     this.game.physics.arcade.collide(this.player, this.buildings);
     this.game.physics.arcade.collide(this.player, this.obstacles);
+<<<<<<< HEAD
     this.game.physics.arcade.collide(this.player, this.lake, (player) => {
       console.log('collide')
     });
@@ -138,6 +256,9 @@ export default class Main extends Phaser.State {
       console.log('overlap')
     });
     const server = this.game.server;
+=======
+
+>>>>>>> 7226f95d97d285e569a35c5f24d93042def3cdfd
 
     this.game.physics.arcade.overlap(this.oponent.bullets, this.player, (tank, bullet)=>{
       bullet.kill();
@@ -153,12 +274,32 @@ export default class Main extends Phaser.State {
       }
     }, null, this);
 
+<<<<<<< HEAD
     if(this.player.currentSpeed === 0 && this.player.velocity == 0) {
       console.log(this.player.velocity);
       this.stand_music.play('', 0, 0.5, false, false);
     } else {
       console.log('stop' + this.player.velocity);
       this.stand_music.stop();
+=======
+
+
+    if(server.isMasterClient()) {
+    
+
+      if(this.crystals.length < this.maxCrystals) {
+        const crTile = this.land.objects.crystals[Math.floor(Math.random() * this.land.objects.crystals.length)];
+        if(this.crystals.length > 0) {
+          for(let i = 0; i < this.crystals.length; i++) {
+            if(this.crystals[i].x !== crTile.x || this.crystals[i].y !== crTile.y) {
+              server.spawnCrystal(Math.floor(crTile.x), Math.floor(crTile.y));
+            }
+          }
+        } else {
+          server.spawnCrystal(Math.floor(crTile.x), Math.floor(crTile.y));
+        }
+      }
+>>>>>>> 7226f95d97d285e569a35c5f24d93042def3cdfd
     }
 
     this.player.work_update();

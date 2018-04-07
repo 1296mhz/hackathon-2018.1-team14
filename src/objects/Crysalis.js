@@ -1,4 +1,4 @@
-export default class Crystal extends Phaser.Sprite {
+export default class Crysalis extends Phaser.Sprite {
     constructor({game, x, y, key, frame}) {
         super(game, x, y, key, frame);
 
@@ -8,7 +8,7 @@ export default class Crystal extends Phaser.Sprite {
         this.game.physics.enable(this, Phaser.Physics.ARCADE);
         
         this.body.immovable = true;
-        this.body.collideWorldBounds = true;
+        this.body.collideWorldBounds = false;
     }
 
     update() {

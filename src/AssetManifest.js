@@ -4,7 +4,8 @@ const AssetManifest = {
   spritesheets: [
     'textures',
     'tanks',
-    'enemy-tanks'
+    'enemy-tanks',
+    'tilel16'
   ],
   images: [
     'bg',

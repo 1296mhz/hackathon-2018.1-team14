@@ -53,6 +53,23 @@ export default class Client extends EventEmitter {
             this.state.win = data.state.win;
             this.emit('gameEnd', this.state);
         });
+
+        this.socket.on("spawnCrystalFromServer", (data)=>{
+            this.emit('spawnCrystalFromServer', data);
+        });
+
+        this.socket.on("damageCrystalFromServer", (data)=>{
+            this.state.red_data = data.state.red_data;
+            this.state.blue_data = data.state.blue_data;
+            this.emit('damageCrystalFromServer', data);
+        });
+
+        this.socket.on("takeCrysalisFromServer", (data)=>{
+            this.state.red_data = data.state.red_data;
+            this.state.blue_data = data.state.blue_data;
+            this.emit('takeCrysalisFromServer', data);
+        });
+        
     }
 
     onConnected() {
@@ -61,7 +78,7 @@ export default class Client extends EventEmitter {
 
     isMasterClient() {
         //console.log(this.state.clientOwner, this.socket.id)
-        return this.state.clientOwner.id === this.socket.id;
+        return this.state.clientOwner && this.state.clientOwner.id === this.socket.id;
     }
 
     onServerState(data) {
@@ -160,6 +177,28 @@ export default class Client extends EventEmitter {
         this.socket.emit("damage", {
             id : this.socket.id,
             cmd : cmd
+        }); 
+    }
+
+    spawnCrystal(x, y) {
+        this.socket.emit("spawnCrystal", {
+            id : this.socket.id,
+            x : x, y : y
+        }); 
+    }
+
+    damageCrystal(cmd, pos) {
+        this.socket.emit("damageCrystal", {
+            id : this.socket.id,
+            pos: pos
+        }); 
+    }
+
+    takeCrysalis(cmd, pos) {
+        this.socket.emit("takeCrysalis", {
+            id : this.socket.id,
+            cmd : cmd,
+            pos: pos
         }); 
     }
 };

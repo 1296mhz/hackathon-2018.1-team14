@@ -20,7 +20,7 @@ export default class Main extends Phaser.State {
     this.land = this.game.add.tileSprite(
       0, 0, 
       window.innerWidth * dpr, window.innerHeight * dpr,
-     'earth');
+     'moon');
     this.land.fixedToCamera = true;
 
 
@@ -98,9 +98,9 @@ export default class Main extends Phaser.State {
     this.playerBullets.setAll('anchor.y', 0.5);
     this.playerBullets.setAll('outOfBoundsKill', true);
     this.playerBullets.setAll('checkWorldBounds', true);
-
-
   }
 
+
+  
 
 }

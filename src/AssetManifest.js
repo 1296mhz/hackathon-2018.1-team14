@@ -14,7 +14,8 @@ const AssetManifest = {
     'light_sand',
     'sand',
     'scorched_earth',
-    'button_default'
+    'button_default',
+    'moon'
   ],
   audio: [
     'blip'

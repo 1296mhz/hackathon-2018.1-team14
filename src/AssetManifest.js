@@ -38,6 +38,11 @@ const AssetManifest = {
     'water',
     'zeppelin'
   ],
+  tilemaps: [
+    'battlefield',
+    'grass',
+    'sheet'
+  ],
   fonts: {
     google: {
       families: [

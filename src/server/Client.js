@@ -29,6 +29,7 @@ export default class Client extends EventEmitter {
     }
 
     isCommandFull(cmd) {
+        console.log(this.state)
         if(cmd ==="red") {
             return this.state.red.length >= 3;
         } else {

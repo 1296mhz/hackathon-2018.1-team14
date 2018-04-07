@@ -17,10 +17,13 @@ export default class GameWait extends Phaser.State {
 
         this.title.setTextBounds(0, 0, window.innerWidth, 32);
 
+        const server = this.game.server;
+
         server.on('onServerState', ()=>{
             console.log("onServerState");
-            
-            
+            if(server.isGameReady()) {
+                this.game.state.start('Main');
+            }
         });
     }
 

@@ -48,7 +48,6 @@ class GameState {
         }        
     }
 
-
     toJSON() {
         return {
             gameCreated : this.gameCreated,
@@ -66,6 +65,7 @@ const CLIENT_STATE_IN_ROLE = 3;
 
 class ClientState {
     constructor(socket, game_state) {
+        log.info("Init ClientState", socket.id, socket_clients.length)
         this.game_state = game_state;
         this.socket = socket;
         this.id = socket.id;
@@ -81,6 +81,7 @@ class ClientState {
         });
 
         this.socket.on('join', (msg)=>{
+            console.log(msg)
             game_state.join(msg.cmd, this);
             this.role = msg.role;
             broadcast('serverState', this.game_state.toJSON());
@@ -89,7 +90,6 @@ class ClientState {
 
     
     emit(cmd, data) {
-        console.log("emit", cmd, data)
         this.socket.emit(cmd, data)
     }
 
@@ -112,15 +112,24 @@ const gameState = new GameState();
 
 // listen for a connection request from any client
 io.sockets.on('connection', (socket)=>{
-    console.log("socket connected", socket.id); 
+    // log.info("socket connected", socket.id); 
     const exist_cl = _.findWhere(socket_clients, { id : socket.id });
-    console.log(exist_cl)
+
     if(!exist_cl) {
         const state_new = new ClientState(socket, gameState);
+
+        socket.on('error', (error) => {
+            log.error("Handle socket error", socket.id, errot)
+        });
+
         socket.on('disconnect', ()=>{
             removeUser(state_new.id);
-            io.emit('userDisconnected', state_new.id);
+        
+        //    io.emit('userDisconnected', state_new.id);
         });
+
+        console.log(gameState.toJSON());
+
         socket.emit('serverState', gameState.toJSON());
         socket_clients.push(state_new);
     }

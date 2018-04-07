@@ -27,6 +27,9 @@ export default class Menu extends Phaser.State {
 
         this.title.setTextBounds(0, 0, window.innerWidth, 32);
 
+        this.select_cmd = null;
+        this.select_role = null;
+
         this.initState(STATE_SELECT_STATE);
 
 
@@ -139,9 +142,6 @@ export default class Menu extends Phaser.State {
     onButtonAction(action) {
         const server = this.game.server;
 
-        let select_cmd = null;
-        let select_role = null;
-
         switch(action) {
             case "create_game": {
                 server.createGame();
@@ -153,31 +153,31 @@ export default class Menu extends Phaser.State {
                 break; 
             }
             case "select_red_command": { 
-                select_cmd = "red";
+                this.select_cmd = "red";
                 this.initState(STATE_SELECT_ROLE); 
                 break; 
             }
             case "select_blue_command": { 
-                select_cmd = "blue";
+                this.select_cmd = "blue";
                 this.initState(STATE_SELECT_ROLE);
                 break; 
             }
             case "select_role_driver": { 
-                select_role = "driver";
+                this.select_role = "driver";
                 this.clearButtons(); 
-                server.join(select_cmd, select_role);
+                server.join(this.select_cmd, this.select_role);
                 break; 
             }
             case "select_role_gunner": { 
-                select_role = "gunner";
+                this.select_role = "gunner";
                 this.clearButtons(); 
-                server.join(select_cmd, select_role);
+                server.join(this.select_cmd, this.select_role);
                 break; 
             }
             case "select_role_сommander": { 
-                select_role = "сommander";
+                this.select_role = "сommander";
                 this.clearButtons(); 
-                server.join(select_cmd, select_role);
+                server.join(this.select_cmd, this.select_role);
                 break; 
             }
         }

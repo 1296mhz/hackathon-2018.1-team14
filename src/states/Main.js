@@ -9,6 +9,8 @@ export default class Main extends Phaser.State {
     this.game.load.tilemap('tilemap', 'dist/assets/battlefield.json', null, Phaser.Tilemap.TILED_JSON);
     this.game.load.image('grass', 'dist/assets/grass.png');
     this.game.load.image('items', 'dist/assets/sheet.png');
+    this.game.load.image('fill', 'dist/assets/bg.png');
+    this.game.load.image('bullet', 'dist/assets/bullet.png');
   }
   /**
    * Setup all objects, etc needed for the main game state.
@@ -30,7 +32,15 @@ export default class Main extends Phaser.State {
     this.layer.resizeWorld();
     this.layer2.resizeWorld();
 
+
     const server = this.game.server;
+
+    this.objects = this.game.add.physicsGroup();
+    this.land.createFromObjects('objects', '', 'fill', 1, true, false, this.objects, Phaser.Sprite, false);
+    this.objects.forEach((object) => {
+      object.body.immovable = true;
+      object.alpha = 0;
+    });
 
     // Add a player to the game.
     this.player = new Tank({
@@ -108,6 +118,7 @@ export default class Main extends Phaser.State {
    * Handle actions in the main game loop.
    */
   update() {
+    this.game.physics.arcade.collide(this.player, this.objects);
     const server = this.game.server;
 
     this.game.physics.arcade.overlap(this.oponent.bullets, this.player, (tank, bullet)=>{

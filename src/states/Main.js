@@ -28,7 +28,7 @@ export default class Main extends Phaser.State {
     const dpr = Math.round(window.devicePixelRatio);
 
     // Add background tile.
-    this.land = this.game.add.tilemap('tilemap');
+    this.land = this.game.add.tilemap('tilemap', 32,32, 800, 600);
     this.land.addTilesetImage('grass', 'grass');
     this.land.addTilesetImage('base', 'base');
     this.land.addTilesetImage('buildings', 'buildings');
@@ -58,8 +58,8 @@ export default class Main extends Phaser.State {
     // Add a player to the game.
     this.player = new Tank({
       game: this.game,
-      x: this.game.world.centerX,
-      y: this.game.world.centerY,
+      x: this.game.world.centerX - 800,
+      y: this.game.world.centerY - 800,
       key: 'textures',
       frame: server.getMyCommand() == "red" ? 'tank_1.png' : 'tank_2.png'
     });
@@ -111,6 +111,7 @@ export default class Main extends Phaser.State {
 
     this.game.camera.follow(this.player);
     this.game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300);
+    this.game.camera.focusOnXY(0, 0);
 
     // Setup listener for window resize.
     window.addEventListener('resize', throttle(this.resize.bind(this), 50), false);

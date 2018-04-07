@@ -20,6 +20,11 @@ const AssetManifest = {
   audio: [
     'blip'
   ],
+  tilemaps: [
+    'battlefield',
+    'grass',
+    'sheet'
+  ],
   fonts: {
     google: {
       families: [

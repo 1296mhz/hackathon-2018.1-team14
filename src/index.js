@@ -6,6 +6,7 @@ import Preload from './states/Preload';
 import Main from './states/Main';
 import Menu from './states/Menu';
 import GameWait from './states/GameWait';
+import GameEnd from './states/GameEnd';
 
 import './assets/css/index.css';
 const Client = require('./server/Client').default;
@@ -40,6 +41,7 @@ class Game extends Phaser.Game {
     this.state.add('Menu', Menu, false);
     this.state.add('GameWait', GameWait, false);
     this.state.add('Main', Main, false);
+    this.state.add('GameEnd', GameEnd, false);
     
     // Kick things off with the boot state.
     this.state.start('Boot');

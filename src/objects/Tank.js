@@ -14,6 +14,11 @@ export default class Tank extends Phaser.Sprite {
 
     this.game.physics.enable(this, Phaser.Physics.ARCADE);
     
+  
+    this.body.immovable = false;
+    this.body.collideWorldBounds = true;
+    this.body.bounce.setTo(1, 1);
+
     this.body.drag.set(0.2);
     this.body.maxVelocity.setTo(400, 400);
     this.body.collideWorldBounds = true;
@@ -23,12 +28,23 @@ export default class Tank extends Phaser.Sprite {
     //this.shadow = this.game.add.sprite(x, y, 'tanks', 'shadow');
     this.turret = this.game.add.sprite(x, y, 'textures', 'head.png');
 
-    
+    this.fireRate = 500;
+    this.nextFire = 0;
+
    // this.shadow.anchor.set(0.5);
     this.turret.anchor.set(0.5, 0.5);
 
     this.bringToTop();
     this.turret.bringToTop();
+
+    this.bullets = game.add.group();
+    this.bullets.enableBody = true;
+    this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
+    this.bullets.createMultiple(30, 'fire', 0, false);
+    this.bullets.setAll('anchor.x', 0.5);
+    this.bullets.setAll('anchor.y', 0.5);
+    this.bullets.setAll('outOfBoundsKill', true);
+    this.bullets.setAll('checkWorldBounds', true);
   }
 
 
@@ -68,8 +84,7 @@ export default class Tank extends Phaser.Sprite {
       }
     }
     
-    if (this.currentSpeed > 0)
-    {
+    if (this.currentSpeed > 0) {
       this.game.physics.arcade.velocityFromRotation(
         this.rotation, 
         this.currentSpeed, 
@@ -86,6 +101,15 @@ export default class Tank extends Phaser.Sprite {
     const server = this.game.server;
     this.turret.rotation = game.physics.arcade.angleToPointer(this.turret);
     server.updateGunner(this.turret.rotation);
+    if (this.game.input.activePointer.isDown) {
+      if (this.game.time.now > this.nextFire && this.bullets.countDead() > 0) {
+        this.nextFire = this.game.time.now + this.fireRate;
+        server.fire({
+          x : this.game.input.activePointer.worldX,
+          y : this.game.input.activePointer.worldY
+        });
+      }
+    }
   }
 
   setDriverUpdate(data) {
@@ -93,12 +117,24 @@ export default class Tank extends Phaser.Sprite {
     this.rotation = data.angle;
     this.x = data.x;
     this.y = data.y;
-
     this.turret.x = this.x;
     this.turret.y = this.y;
   }
 
   setGunnerUpdate(data) {
     this.turret.rotation = data.angle;
+  }
+
+  fire(data) {
+    console.log("Tank:file", data)
+    const bullet = this.bullets.getFirstExists(false);
+    if(bullet) {
+      bullet.reset(this.turret.x, this.turret.y);
+      bullet.rotation = this.game.physics.arcade.moveToXY(
+        bullet, 
+        data.target.x, data.target.y,
+        1000, 
+        500);
+    }   
   }
 }

@@ -23,9 +23,6 @@ export default class Main extends Phaser.State {
      'moon');
     this.land.fixedToCamera = true;
 
-
-    this.initBulletGroups();
-
     // Add a player to the game.
     this.player = new Tank({
       game: this.game,
@@ -44,6 +41,7 @@ export default class Main extends Phaser.State {
     });
 
     const server = this.game.server;
+
     server.on('update_player_driver', (data)=>{
       this.player.setDriverUpdate(data);
     });
@@ -56,6 +54,18 @@ export default class Main extends Phaser.State {
     });
     server.on('update_op_gunner', (data)=>{
       this.oponent.setGunnerUpdate(data);
+    });
+
+    server.on('player_fire', (data)=>{
+      this.player.fire(data);
+    });
+
+    server.on('op_fire', (data)=>{
+      this.oponent.fire(data);
+    });
+
+    server.on('gameEnd', (data)=>{
+      this.game.state.start('GameEnd');
     });
 
     this.game.camera.follow(this.player);
@@ -80,24 +90,25 @@ export default class Main extends Phaser.State {
    * Handle actions in the main game loop.
    */
   update() {
+    const server = this.game.server;
+
+    this.game.physics.arcade.overlap(this.oponent.bullets, this.player, (tank, bullet)=>{
+      bullet.kill();
+      if(server.isMasterClient()) {
+        server.damage(server.getMyCommand());
+      }
+    }, null, this);
+
+    this.game.physics.arcade.overlap(this.player.bullets, this.oponent, (tank, bullet)=>{
+      bullet.kill();
+      if(server.isMasterClient()) {
+        server.damage(server.getMyCommand() === "red" ? "red" : "blue");
+      }
+    }, null, this);
+
+
     this.land.tilePosition.x = -this.game.camera.x;
     this.land.tilePosition.y = -this.game.camera.y;
     this.player.work_update();
   }
-
-
-  initBulletGroups() {
-    this.playerBullets = game.add.group();
-    this.playerBullets.enableBody = true;
-    this.playerBullets.physicsBodyType = Phaser.Physics.ARCADE;
-    this.playerBullets.createMultiple(30, 'bullet', 0, false);
-    this.playerBullets.setAll('anchor.x', 0.5);
-    this.playerBullets.setAll('anchor.y', 0.5);
-    this.playerBullets.setAll('outOfBoundsKill', true);
-    this.playerBullets.setAll('checkWorldBounds', true);
-  }
-
-
-  
-
 }

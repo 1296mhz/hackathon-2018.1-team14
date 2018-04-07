@@ -15,10 +15,28 @@ const AssetManifest = {
     'sand',
     'scorched_earth',
     'button_default',
-    'moon'
+    'moon',
+    'fire'
   ],
   audio: [
-    'blip'
+    'acidbomb',
+    'base',
+    'blip',
+    'electro-bomb',
+    'heal',
+    'pigsqueal',
+    'robotkill',
+    'rosketlaunch',
+    'shrooms',
+    'simple-bomb',
+    'simple-bomb2',
+    'spider-steps',
+    'tank-begin',
+    'tank-moves',
+    'tank-stand',
+    'train-horn',
+    'water',
+    'zeppelin'
   ],
   fonts: {
     google: {

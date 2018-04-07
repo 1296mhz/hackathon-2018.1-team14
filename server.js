@@ -33,6 +33,18 @@ class GameState {
         this.clientOwner = null;
         this.red = [];
         this.blue = [];
+
+        this.red_data = {
+            hp : 100,
+            hp_max : 100
+        };
+
+        this.blue_data = {
+            hp : 100,
+            hp_max : 100
+        };
+
+        this.win = null;
     }
 
     setOwner(cl) {
@@ -53,7 +65,10 @@ class GameState {
             gameCreated : this.gameCreated,
             clientOwner : this.clientOwner ? this.clientOwner.toJSON() : null,
             red : this.red.map(i=>i.toJSON()),
-            blue: this.blue.map(i=>i.toJSON())
+            blue: this.blue.map(i=>i.toJSON()),
+            red_data : this.red_data,
+            blue_data: this.blue_data,
+            win : this.win
         }
     }
 }
@@ -93,7 +108,44 @@ class ClientState {
 
         this.socket.on('updateGunner', (msg)=>{
             broadcast('updateGunnerFromServer', msg);
-        });     
+        });
+
+        this.socket.on('fire', (msg)=>{
+            broadcast('fireFromServer', msg);
+        });
+
+        this.socket.on('damage', (msg)=>{
+            if(msg.cmd === "red") {
+                this.game_state.red_data.hp -= 1;
+            } else {
+                this.game_state.blue_data.hp -= 1;
+            }
+
+            console.log("red", this.game_state.red_data)
+            console.log("blue", this.game_state.blue_data)
+
+            broadcast('damageFromServer', {
+                cmd : msg.cmd,
+                state : this.game_state
+            });
+
+            if(this.game_state.red_data.hp <= 0) {
+                this.game_state.red_data.hp = 0;
+                this.game_state.win = "blue";
+                broadcast('gameEnd', {
+                    win : "blue",
+                    state : this.game_state
+                });
+            }
+            if(this.game_state.blue_data.hp <= 0) {
+                this.game_state.blue_data.hp = 0;
+                this.game_state.win = "red";
+                broadcast('gameEnd', {
+                    win : "red",
+                    state : this.game_state
+                });
+            }
+        });
     }
 
     
@@ -120,24 +172,15 @@ const gameState = new GameState();
 
 // listen for a connection request from any client
 io.sockets.on('connection', (socket)=>{
-    // log.info("socket connected", socket.id); 
     const exist_cl = _.findWhere(socket_clients, { id : socket.id });
-
     if(!exist_cl) {
         const state_new = new ClientState(socket, gameState);
-
         socket.on('error', (error) => {
             log.error("Handle socket error", socket.id, errot)
         });
-
         socket.on('disconnect', ()=>{
             removeUser(state_new.id);
-        
-        //    io.emit('userDisconnected', state_new.id);
         });
-
-        console.log(gameState.toJSON());
-
         socket.emit('serverState', gameState.toJSON());
         socket_clients.push(state_new);
     }

@@ -15,6 +15,8 @@ export default class Main extends Phaser.State {
     this.game.load.image('railways', 'dist/assets/tilelong.png');
     this.game.load.image('tilels', 'dist/assets/tilels.png');
     this.game.load.image('bullet', 'dist/assets/bullet.png');
+    this.stand_music = this.game.add.audio('tank-stand');
+    this.stand_music.allowMultiple = false;
   }
   /**
    * Setup all objects, etc needed for the main game state.
@@ -129,6 +131,12 @@ export default class Main extends Phaser.State {
   update() {
     this.game.physics.arcade.collide(this.player, this.buildings);
     this.game.physics.arcade.collide(this.player, this.obstacles);
+    this.game.physics.arcade.collide(this.player, this.lake, (player) => {
+      console.log('collide')
+    });
+    this.game.physics.arcade.overlap(this.player, this.lake, (player) => {
+      console.log('overlap')
+    });
     const server = this.game.server;
 
     this.game.physics.arcade.overlap(this.oponent.bullets, this.player, (tank, bullet)=>{
@@ -144,6 +152,14 @@ export default class Main extends Phaser.State {
         server.damage(server.getMyCommand() === "red" ? "blue" : "red");
       }
     }, null, this);
+
+    if(this.player.currentSpeed === 0 && this.player.velocity == 0) {
+      console.log(this.player.velocity);
+      this.stand_music.play('', 0, 0.5, false, false);
+    } else {
+      console.log('stop' + this.player.velocity);
+      this.stand_music.stop();
+    }
 
     this.player.work_update();
   }

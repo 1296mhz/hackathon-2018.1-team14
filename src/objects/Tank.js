@@ -7,6 +7,7 @@ export default class Tank extends Phaser.Sprite {
 
     this.cursors = game.input.keyboard.createCursorKeys();
     this.currentSpeed = 0;
+    this.velocity = 0;
 
     // Add the sprite to the game.
     this.game.add.existing(this);
@@ -102,7 +103,7 @@ export default class Tank extends Phaser.Sprite {
     this.turret.x = this.x;
     this.turret.y = this.y;
 
-    server.updateDriver(this.x, this.y, this.rotation);
+    server.updateDriver(this.x, this.y, this.rotation, this.currentSpeed);
   }
 
   _updateGunner() {
@@ -125,6 +126,7 @@ export default class Tank extends Phaser.Sprite {
     this.rotation = data.angle;
     this.x = data.x;
     this.y = data.y;
+    this.velocity = data.velocity;
     this.turret.x = this.x;
     this.turret.y = this.y;
   }

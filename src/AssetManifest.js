@@ -23,6 +23,8 @@ const AssetManifest = {
   audio: [
     'acidbomb',
     'base',
+    'damage',
+    'fire',
     'blip',
     'electro-bomb',
     'heal',

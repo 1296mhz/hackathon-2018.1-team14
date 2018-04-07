@@ -59,6 +59,7 @@ export default class Client extends EventEmitter {
     }
 
     isMasterClient() {
+        //console.log(this.state.clientOwner, this.socket.id)
         return this.state.clientOwner.id === this.socket.id;
     }
 
@@ -154,7 +155,7 @@ export default class Client extends EventEmitter {
     }
 
     damage(cmd) {
-        this.socket.emit("fire", {
+        this.socket.emit("damage", {
             id : this.socket.id,
             cmd : cmd
         }); 

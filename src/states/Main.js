@@ -109,7 +109,7 @@ export default class Main extends Phaser.State {
     this.game.physics.arcade.overlap(this.player.bullets, this.oponent, (tank, bullet)=>{
       bullet.kill();
       if(server.isMasterClient()) {
-        server.damage(server.getMyCommand() === "red" ? "red" : "blue");
+        server.damage(server.getMyCommand() === "red" ? "blue" : "red");
       }
     }, null, this);
 

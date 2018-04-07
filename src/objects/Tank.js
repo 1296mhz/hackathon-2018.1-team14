@@ -127,6 +127,7 @@ export default class Tank extends Phaser.Sprite {
 
   fire(data) {
     console.log("Tank:file", data)
+    if(!data.target) return; // FIXME
     const bullet = this.bullets.getFirstExists(false);
     if(bullet) {
       bullet.reset(this.turret.x, this.turret.y);

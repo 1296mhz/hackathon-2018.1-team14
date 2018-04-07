@@ -131,6 +131,8 @@ export default class Tank extends Phaser.Sprite {
     this.turret.y = this.y;
 
     server.updateDriver(this.x, this.y, this.rotation, this.currentSpeed);
+
+   // console.log("Tank", this.x, this.y)
   }
 
   _updateGunner() {

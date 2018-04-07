@@ -22,11 +22,18 @@ export default class Preload extends Phaser.State {
     this.game.load.crossOrigin = 'anonymous';
     this.game.load.maxParallelDownloads = Infinity;
 
+    
+    const server = this.game.server;
+
     // Begin loading all of the assets.
     this.game.plugins.add(WebpackLoader, AssetManifest, postfix)
       .load()
       .then(() => {
-        this.game.state.start('Menu');
+        if(server.getMyCommand()) {
+          this.game.state.start('GameWait');
+        } else {
+          this.game.state.start('Menu');
+        }
       });
   }
 

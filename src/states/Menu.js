@@ -13,19 +13,33 @@ export default class Menu extends Phaser.State {
 
         const width = window.innerWidth * window.devicePixelRatio;
         const height = window.innerHeight * window.devicePixelRatio;
-
         this.bg = game.add.tileSprite(0, 0, width, height, 'light_sand');
 
         this.buttons = [];
         this.texts = [];
       
+        this.title = this.game.add.text(0, 64, "Title", {
+            font: "bold 32px Arial", 
+            fill: "#222", 
+            boundsAlignH: "center", 
+            boundsAlignV: "middle"
+        });
+
+        this.title.setTextBounds(0, 0, window.innerWidth, 32);
+
         this.initState(STATE_SELECT_STATE);
+
 
         const server = this.game.server;
 
         server.on('onServerState', ()=>{
             console.log("onServerState");
-            this.initState(this.state);
+            if(server.getMyCommand()) {
+                this.game.state.start('GameWait');
+            } else {
+                this.initState(this.state);
+            }
+            
         })
 
         console.log("ClientId", server.getClientID());
@@ -52,6 +66,7 @@ export default class Menu extends Phaser.State {
         this.clearButtons();
         switch(state) {
             case STATE_SELECT_STATE: {
+                this.title.setText("Start game");
                 // console.log(server.state)
                 if(!server.state.gameCreated) {
                     this.addButton("Create game", "create_game");
@@ -61,6 +76,7 @@ export default class Menu extends Phaser.State {
                 break;
             }
             case STATE_SELECT_COMMAND: {
+                this.title.setText("Select command");
                 if(!server.isCommandFull("red")) {
                     this.addButton("Command red",  "select_red_command");
                 }
@@ -70,6 +86,7 @@ export default class Menu extends Phaser.State {
                 break;
             }
             case STATE_SELECT_ROLE: {
+                this.title.setText("Select role");
                 const myCmd = server.getMyCommand();
 
                 if(server.isVacant(myCmd, "driver")) {

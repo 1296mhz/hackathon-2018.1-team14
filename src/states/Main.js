@@ -6,7 +6,7 @@ import Tank from '../objects/Tank';
  */
 export default class Main extends Phaser.State {
   preload() {
-    this.game.load.tilemap('tilemap', 'dist/assets/battlefield2.json', null, Phaser.Tilemap.TILED_JSON);
+    this.game.load.tilemap('tilemap', 'dist/assets/battlefield4.json', null, Phaser.Tilemap.TILED_JSON);
     this.game.load.image('grass', 'dist/assets/grass.png');
     this.game.load.image('base', 'dist/assets/tile256_1.png');
     this.game.load.image('buildings', 'dist/assets/tile256_2.png');
@@ -23,12 +23,12 @@ export default class Main extends Phaser.State {
     // Enable arcade physics.
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    this.game.world.setBounds(-1000, -1000, 2000, 2000);
+    this.game.world.setBounds(0, 0, 1920, 1920);
 
     const dpr = Math.round(window.devicePixelRatio);
 
     // Add background tile.
-    this.land = this.game.add.tilemap('tilemap', 32,32, 800, 600);
+    this.land = this.game.add.tilemap('tilemap');
     this.land.addTilesetImage('grass', 'grass');
     this.land.addTilesetImage('base', 'base');
     this.land.addTilesetImage('buildings', 'buildings');
@@ -39,8 +39,8 @@ export default class Main extends Phaser.State {
     this.ground = this.land.createLayer('ground');
     this.buildings = this.land.createLayer('buildings');
     this.obstacles = this.land.createLayer('obstacles');
-    this.base = this.land.createLayer('base');
-    this.railways = this.land.createLayer('railways');
+    this.base = this.land.createLayer('bases');
+    this.railways = this.land.createLayer('lakes');
 
     const server = this.game.server;
 
@@ -110,8 +110,6 @@ export default class Main extends Phaser.State {
     
 
     this.game.camera.follow(this.player);
-    this.game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300);
-    this.game.camera.focusOnXY(0, 0);
 
     // Setup listener for window resize.
     window.addEventListener('resize', throttle(this.resize.bind(this), 50), false);

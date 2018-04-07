@@ -55,6 +55,11 @@ export default class Client extends EventEmitter {
         }
     } 
 
+    isGameReady() {
+        return this.state.red.length >= 3 && this.state.blue.length >= 3;
+    }
+
+
     getClientID() {
         return this.socket.id;
     }

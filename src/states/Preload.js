@@ -34,8 +34,8 @@ export default class Preload extends Phaser.State {
       } else {
         this.game.state.start('Menu');
       }
+     // this.game.state.start('StarHolder');
     });
-
   }
 
   /**

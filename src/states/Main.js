@@ -6,7 +6,7 @@ import Tank from '../objects/Tank';
  */
 export default class Main extends Phaser.State {
   preload() {
-    this.game.load.tilemap('tilemap', 'dist/assets/battlefield4.json', null, Phaser.Tilemap.TILED_JSON);
+    this.game.load.tilemap('tilemap', 'dist/assets/battlefield3.json', null, Phaser.Tilemap.TILED_JSON);
     this.game.load.image('grass', 'dist/assets/grass.png');
     this.game.load.image('base', 'dist/assets/tile256_1.png');
     this.game.load.image('buildings', 'dist/assets/tile256_2.png');

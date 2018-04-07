@@ -66,11 +66,19 @@ const config = {
         use: ['expose-loader?Phaser'],
       },
       {
-        test: /\.(png|jpg|gif|svg|pvr|pkm|mp3)$/,
+        test: /\.(png|jpg|gif|svg|pvr|pkm|mp3|ttf)$/,
         use: ['file-loader?name=assets/[name].[ext]?[hash]'],
       },
       {
         test: /battlefield\.json$/,
+        use: ['file-loader?name=assets/[name].[ext]?[hash]'],
+      },
+      {
+        test: /battlefield2\.json$/,
+        use: ['file-loader?name=assets/[name].[ext]?[hash]'],
+      },
+      {
+        test: /battlefield3\.json$/,
         use: ['file-loader?name=assets/[name].[ext]?[hash]'],
       },
     /*  {

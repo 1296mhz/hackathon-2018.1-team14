@@ -22,7 +22,7 @@ export default class Main extends Phaser.State {
     const dpr = Math.round(window.devicePixelRatio);
 
     // Add background tile.
-    this.land = this.game.add.tilemap('tilemap');
+    this.land = this.game.add.tilemap('tilemap', 32, 32, 800, 600);
     this.land.addTilesetImage('grassembed', 'grass');
     this.land.addTilesetImage('itemsembed', 'items');
     this.layer = this.land.createLayer('layer');
@@ -114,8 +114,8 @@ export default class Main extends Phaser.State {
     }, null, this);
 
 
-    this.land.tilePosition.x = -this.game.camera.x;
-    this.land.tilePosition.y = -this.game.camera.y;
+    //this.land.tilePosition.x = -this.game.camera.x;
+    //this.land.tilePosition.y = -this.game.camera.y;
     this.player.work_update();
   }
 }

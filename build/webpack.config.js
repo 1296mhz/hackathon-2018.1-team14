@@ -69,6 +69,10 @@ const config = {
         test: /\.(png|jpg|gif|svg|pvr|pkm|mp3)$/,
         use: ['file-loader?name=assets/[name].[ext]?[hash]'],
       },
+      {
+        test: /battlefield\.json$/,
+        use: ['file-loader?name=assets/[name].[ext]?[hash]'],
+      },
     /*  {
         test: /\.mp3$/,
         use: 'file-loader?hash=sha512&digest=hex&name=assets/[name].[ext]?[hash]',

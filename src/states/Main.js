@@ -6,7 +6,7 @@ import Tank from '../objects/Tank';
  */
 export default class Main extends Phaser.State {
   preload() {
-    this.game.load.tilemap('tilemap', 'dist/assets/battlefield3.json', null, Phaser.Tilemap.TILED_JSON);
+    this.game.load.tilemap('tilemap', 'dist/assets/battlefield4.json', null, Phaser.Tilemap.TILED_JSON);
     this.game.load.image('grass', 'dist/assets/grass.png');
     this.game.load.image('base', 'dist/assets/tile256_1.png');
     this.game.load.image('buildings', 'dist/assets/tile256_2.png');
@@ -31,10 +31,8 @@ export default class Main extends Phaser.State {
     this.land = this.game.add.tilemap('tilemap');
     this.land.addTilesetImage('grass', 'grass');
     this.land.addTilesetImage('base', 'base');
-    this.land.addTilesetImage('buildings', 'buildings');
+    this.land.addTilesetImage('building', 'buildings');
     this.land.addTilesetImage('lake', 'lake');
-    this.land.addTilesetImage('lake2', 'lake2');
-    this.land.addTilesetImage('railways', 'railways');
     this.land.addTilesetImage('tilels', 'tilels');
     this.ground = this.land.createLayer('ground');
     this.buildings = this.land.createLayer('buildings');

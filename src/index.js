@@ -32,6 +32,7 @@ class Game extends Phaser.Game {
     });
 
     this.server = new Client("http://localhost:7788/");
+    console.log(this.server);
     this.server.connect();
 
     // Setup the different game states.

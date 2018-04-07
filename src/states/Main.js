@@ -5,6 +5,11 @@ import Tank from '../objects/Tank';
  * Setup and display the main game state.
  */
 export default class Main extends Phaser.State {
+  preload() {
+    this.game.load.tilemap('tilemap', 'assets/battlefield.json', null, Phaser.Tilemap.TILED_JSON);
+    this.game.load.image('grass', 'assets/grass.png');
+    this.game.load.image('items', 'assets/sheet.png');
+  }
   /**
    * Setup all objects, etc needed for the main game state.
    */
@@ -17,11 +22,13 @@ export default class Main extends Phaser.State {
     const dpr = Math.round(window.devicePixelRatio);
 
     // Add background tile.
-    this.land = this.game.add.tileSprite(
-      0, 0, 
-      window.innerWidth * dpr, window.innerHeight * dpr,
-     'moon');
-    this.land.fixedToCamera = true;
+    this.land = this.game.add.tilemap('tilemap');
+    this.land.addTilesetImage('grassembed', 'grass');
+    this.land.addTilesetImage('itemsembed', 'items');
+    this.layer = this.land.createLayer('layer');
+    this.layer2 = this.land.createLayer('items');
+    this.layer.resizeWorld();
+    this.layer2.resizeWorld();
 
 
     this.initBulletGroups();
@@ -80,8 +87,6 @@ export default class Main extends Phaser.State {
    * Handle actions in the main game loop.
    */
   update() {
-    this.land.tilePosition.x = -this.game.camera.x;
-    this.land.tilePosition.y = -this.game.camera.y;
     this.player.work_update();
   }
 

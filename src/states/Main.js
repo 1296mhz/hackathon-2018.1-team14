@@ -47,7 +47,7 @@ export default class Main extends Phaser.State {
    */
   update() {
 
-    
+
     if (this.cursors.left.isDown){
       this.player.angle -= 4;
     }

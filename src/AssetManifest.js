@@ -13,7 +13,8 @@ const AssetManifest = {
     'light_grass.png',
     'light_sand.png',
     'sand.png',
-    'scorched_earth.png'
+    'scorched_earth.png',
+    'button_default.png'
   ],
   fonts: {
     google: {

@@ -4,8 +4,11 @@ import Stats from 'stats.js';
 import Boot from './states/Boot';
 import Preload from './states/Preload';
 import Main from './states/Main';
-import './assets/css/index.css';
+import Menu from './states/Menu';
+import GameWait from './states/GameWait';
 
+import './assets/css/index.css';
+const Client = require('./server/Client').default;
 
 /**
  * Setup the root class for the whole game.
@@ -28,10 +31,17 @@ class Game extends Phaser.Game {
       enableDebug: process.env.NODE_ENV === 'development',
     });
 
+
+    this.server = new Client("http://localhost:7788/");
+    this.server.connect();
+
     // Setup the different game states.
     this.state.add('Boot', Boot, false);
     this.state.add('Preload', Preload, false);
+    this.state.add('Menu', Menu, false);
+    this.state.add('GameWait', GameWait, false);
     this.state.add('Main', Main, false);
+    
 
     // Kick things off with the boot state.
     this.state.start('Boot');

@@ -25,29 +25,16 @@ export default class Preload extends Phaser.State {
     this.game.load.crossOrigin = 'anonymous';
     this.game.load.maxParallelDownloads = Infinity;
     this.game.sound.usingWebAudio = true;
-    
-    
+  
     const server = this.game.server;
-/*
-    // Begin loading all of the assets.
-    this.game.plugins.add(ManifestLoader, AssetManifest, postfix)
-      .load()
-      .then(() => {
-        if(server.getMyCommand()) {
-          this.game.state.start('GameWait');
-        } else {
-          this.game.state.start('Menu');
-        }
-      });
-*/    
 
-  this.game.plugins.add(ManifestLoader, req).loadManifest(AssetManifest).then(()=>{
-    if(server.getMyCommand()) {
-      this.game.state.start('GameWait');
-    } else {
-      this.game.state.start('Menu');
-    }
-  });
+    this.game.plugins.add(ManifestLoader, req).loadManifest(AssetManifest).then(()=>{
+      if(server.getMyCommand()) {
+        this.game.state.start('GameWait');
+      } else {
+        this.game.state.start('Menu');
+      }
+    });
 
   }
 

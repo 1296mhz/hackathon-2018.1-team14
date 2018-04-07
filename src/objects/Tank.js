@@ -14,7 +14,6 @@ export default class Tank extends Phaser.Sprite {
 
     this.game.physics.enable(this, Phaser.Physics.ARCADE);
     
-  
     this.body.immovable = false;
     this.body.collideWorldBounds = true;
     this.body.bounce.setTo(1, 1);
@@ -31,6 +30,15 @@ export default class Tank extends Phaser.Sprite {
     this.fireRate = 500;
     this.nextFire = 0;
 
+    this.health = 100;
+    this.maxHealth = 100;
+
+    this.hud = Phaser.Plugin.HUDManager.create(this.game, this, 'enemyhud');
+    this.healthHUD = this.hud.addBar(0, -64, 64, 6, this.maxHealth, 'health', this, Phaser.Plugin.HUDManager.HEALTHBAR, false);
+    this.healthHUD.bar.anchor.setTo(0.5, 0.5);
+
+    this.addChild(this.healthHUD.bar);
+
    // this.shadow.anchor.set(0.5);
     this.turret.anchor.set(0.5, 0.5);
 
@@ -40,7 +48,7 @@ export default class Tank extends Phaser.Sprite {
     this.bullets = game.add.group();
     this.bullets.enableBody = true;
     this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
-    this.bullets.createMultiple(30, 'fire', 0, false);
+    this.bullets.createMultiple(30, 'shot', 0, false);
     this.bullets.setAll('anchor.x', 0.5);
     this.bullets.setAll('anchor.y', 0.5);
     this.bullets.setAll('outOfBoundsKill', true);
@@ -126,10 +134,13 @@ export default class Tank extends Phaser.Sprite {
   }
 
   fire(data) {
-    console.log("Tank:file", data)
     if(!data.target) return; // FIXME
     const bullet = this.bullets.getFirstExists(false);
     if(bullet) {
+
+      this.fire_music = game.add.audio('blip');
+      this.fire_music.play();
+
       bullet.reset(this.turret.x, this.turret.y);
       bullet.rotation = this.game.physics.arcade.moveToXY(
         bullet, 

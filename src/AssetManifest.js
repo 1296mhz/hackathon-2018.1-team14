@@ -16,7 +16,8 @@ const AssetManifest = {
     'scorched_earth',
     'button_default',
     'moon',
-    'fire'
+    'fire',
+    'shot'
   ],
   audio: [
     'acidbomb',

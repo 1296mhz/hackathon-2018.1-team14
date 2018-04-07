@@ -6,9 +6,9 @@ import Tank from '../objects/Tank';
  */
 export default class Main extends Phaser.State {
   preload() {
-    this.game.load.tilemap('tilemap', 'assets/battlefield.json', null, Phaser.Tilemap.TILED_JSON);
-    this.game.load.image('grass', 'assets/grass.png');
-    this.game.load.image('items', 'assets/sheet.png');
+    this.game.load.tilemap('tilemap', 'dist/assets/battlefield.json', null, Phaser.Tilemap.TILED_JSON);
+    this.game.load.image('grass', 'dist/assets/grass.png');
+    this.game.load.image('items', 'dist/assets/sheet.png');
   }
   /**
    * Setup all objects, etc needed for the main game state.
@@ -30,25 +30,25 @@ export default class Main extends Phaser.State {
     this.layer.resizeWorld();
     this.layer2.resizeWorld();
 
+    const server = this.game.server;
+
     // Add a player to the game.
     this.player = new Tank({
       game: this.game,
-      x: this.game.world.centerX - 100,
-      y: this.game.world.centerY - 100,
+      x: this.game.world.centerX - 800,
+      y: this.game.world.centerY - 800,
       key: 'textures',
-      frame: 'tank_1.png',
+      frame: server.getMyCommand() == "red" ? 'tank_1.png' : 'tank_2.png'
     });
 
     this.oponent = new Tank({
       game: this.game,
-      x: this.game.world.centerX + 100,
-      y: this.game.world.centerY + 100,
+      x: this.game.world.centerX + 800,
+      y: this.game.world.centerY + 800,
       key: 'textures',
-      frame: 'tank_2.png',
+      frame: server.getMyCommand() == "red" ? 'tank_2.png' : 'tank_1.png'
     });
-
-    const server = this.game.server;
-
+  
     server.on('update_player_driver', (data)=>{
       this.player.setDriverUpdate(data);
     });
@@ -74,6 +74,17 @@ export default class Main extends Phaser.State {
     server.on('gameEnd', (data)=>{
       this.game.state.start('GameEnd');
     });
+
+    server.on('damageFromServer', (data)=>{
+      if(server.getMyCommand() == "red") {
+        this.player.health = server.state.red_data.hp;
+        this.oponent.health = server.state.blue_data.hp;
+      } else {
+        this.player.health = server.state.blue_data.hp;
+        this.oponent.health = server.state.red_data.hp;
+      }
+    });
+    
 
     this.game.camera.follow(this.player);
     this.game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300);
@@ -113,9 +124,6 @@ export default class Main extends Phaser.State {
       }
     }, null, this);
 
-
-    //this.land.tilePosition.x = -this.game.camera.x;
-    //this.land.tilePosition.y = -this.game.camera.y;
     this.player.work_update();
   }
 }

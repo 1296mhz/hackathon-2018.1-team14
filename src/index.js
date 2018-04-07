@@ -11,6 +11,8 @@ import GameEnd from './states/GameEnd';
 import './assets/css/index.css';
 const Client = require('./server/Client').default;
 
+const HUDManager = require('./plugins/HUDManager').default;
+
 /**
  * Setup the root class for the whole game.
  */
@@ -32,7 +34,9 @@ class Game extends Phaser.Game {
       enableDebug: process.env.NODE_ENV === 'development',
     });
 
-    this.server = new Client("http://localhost:7788/");
+    const url = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '') + "/";
+
+    this.server = new Client(url);
     console.log(this.server);
     this.server.connect();
 

@@ -14,7 +14,11 @@ log.remove(log.transports.Console);
 log.add(log.transports.Console, {colorize: true, timestamp: true});
 
 // server static
-app.use('/',express.static(__dirname + '/dist'));
+app.use('/dist',express.static(__dirname + '/dist'));
+
+app.get('/', function(req, res){
+    res.sendFile(__dirname + '/dist/index.html');
+});
 
 const io = require('socket.io')(server,{});
 
@@ -35,12 +39,12 @@ class GameState {
         this.blue = [];
 
         this.red_data = {
-            hp : 100,
+            hp : 1,
             hp_max : 100
         };
 
         this.blue_data = {
-            hp : 100,
+            hp : 1,
             hp_max : 100
         };
 

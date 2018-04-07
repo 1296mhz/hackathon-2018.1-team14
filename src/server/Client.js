@@ -50,6 +50,7 @@ export default class Client extends EventEmitter {
         });
 
         this.socket.on("gameEnd", (data)=>{
+            this.state.win = data.state.win;
             this.emit('gameEnd', this.state);
         });
     }

@@ -73,6 +73,13 @@ export default class Client extends EventEmitter {
         this.socket.on("spawnMobFromServer", (data)=>{
             this.emit('spawnMobFromServer', data);
         });
+
+        this.socket.on("updateHeath", (data)=>{
+            this.state.red_data = data.state.red_data;
+            this.state.blue_data = data.state.blue_data;
+            this.emit('updateHeath', data);
+        });
+        
     }
 
     onConnected() {
@@ -209,6 +216,13 @@ export default class Client extends EventEmitter {
         this.socket.emit("spawnMob", {
             id : this.socket.id,
             x : x, y : y
+        }); 
+    }
+
+    sendOnBase(cmd) {
+        this.socket.emit("sendOnBase", {
+            id : this.socket.id,
+            cmd : cmd
         }); 
     }
 };

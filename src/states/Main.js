@@ -4,6 +4,10 @@ import Crystal from '../objects/Crystal';
 import Crysalis from '../objects/Crysalis';
 import Mob from '../objects/Mob';
 
+// import _ from 'underscore';
+
+const _ = require('underscore');
+
 /**
  * Setup and display the main game state.
  */
@@ -49,6 +53,7 @@ export default class Main extends Phaser.State {
 
     const server = this.game.server;
 
+    //console.log(this.land)
 
     this.land.setCollisionByExclusion([], true, this.obstacles);
     this.land.setCollisionByExclusion([], true, this.buildings);
@@ -188,11 +193,33 @@ export default class Main extends Phaser.State {
         x: data.x,
         y: data.y,
         key: 'textures',
-        frame: 'creep_1_1_b.png'
+        frame: 'creep_1.png'
       });
       this.mobs.push(mob);
     });
 
+
+    server.on('updateHeath', (data)=>{
+      console.log("updateHeath", data)
+      if(server.getMyCommand() == "red") {
+        this.player.health = server.state.red_data.hp;
+        this.player.maxHealth = server.state.red_data.hp_max;
+        this.player.crysalis = server.state.red_data.crystal;
+
+        this.oponent.health = server.state.blue_data.hp;
+        this.oponent.maxHealth = server.state.blue_data.hp_max;
+        this.oponent.crysalis = server.state.blue_data.crystal;
+      } else {
+        this.player.health = server.state.blue_data.hp;
+        this.player.maxHealth = server.state.blue_data.hp_max;
+        this.player.crysalis = server.state.blue_data.crystal;
+
+        this.oponent.health = server.state.red_data.hp;
+        this.oponent.maxHealth = server.state.red_data.hp_max;
+        this.oponent.crysalis = server.state.red_data.crystal;
+      }
+    });
+    
     // 
 
     this.game.camera.follow(this.player);
@@ -291,18 +318,16 @@ export default class Main extends Phaser.State {
     }, null, this);
 
     if(this.player.currentSpeed === 0 && this.player.velocity == 0) {
-      console.log(this.player.velocity);
       this.move_music.stop
       this.stand_music.play('', 0, 0.5, false, false);
     } else {
-      console.log('stop' + this.player.velocity);
       this.stand_music.stop();
       this.move_music.play('', 0, 0.5, false, false);
     }
 
 
     if(server.isMasterClient()) {
-    
+    /*
       if(this.mobs.length < this.maxMobs) {
         const crTile = this.land.objects.crystals[Math.floor(Math.random() * this.land.objects.crystals.length)];
         if(this.mobs.length > 0) {
@@ -316,7 +341,7 @@ export default class Main extends Phaser.State {
           server.spawnMob(Math.floor(crTile.x), Math.floor(crTile.y));
         }
       }
-
+    */
       if(this.crystals.length < this.maxCrystals) {
         const crTile = this.land.objects.crystals[Math.floor(Math.random() * this.land.objects.crystals.length)];
         if(this.crystals.length > 0) {
@@ -331,10 +356,55 @@ export default class Main extends Phaser.State {
         }
       }
 
+      const redBase = _.findWhere(this.land.objects.bases, { name: "baseRed" });
+      const baseBlue = _.findWhere(this.land.objects.bases, { name: "baseBlue" });
+
+
+      if(server.getMyCommand() === "red") {
+        
+        if(this.player.x >= redBase.x - redBase.width / 2 && 
+          this.player.y >= redBase.y - redBase.height / 2 &&
+          this.player.x <= redBase.x + redBase.width / 2 && 
+          this.player.y <= redBase.y + redBase.height / 2 ) { 
+            //console.log("Player on base")
+
+            server.sendOnBase("red");
+        }
+
+        if(this.oponent.x >= baseBlue.x - baseBlue.width / 2 && 
+          this.oponent.y >= baseBlue.y - baseBlue.height / 2 &&
+          this.oponent.x <= baseBlue.x + baseBlue.width / 2 && 
+          this.oponent.y <= baseBlue.y + baseBlue.height / 2 ) { 
+            //console.log("Oponent on base")
+
+            server.sendOnBase("red");
+        }
+
+      } else {
+        
+        if(this.player.x >= baseBlue.x - baseBlue.width / 2 && 
+          this.player.y >= baseBlue.y - baseBlue.height / 2 &&
+          this.player.x <= baseBlue.x + baseBlue.width / 2 && 
+          this.player.y <= baseBlue.y + baseBlue.height / 2 ) { 
+            //console.log("Player on base")
+
+            server.sendOnBase("blue");
+        } 
+
+        if(this.oponent.x >= redBase.x - redBase.width / 2 && 
+          this.oponent.y >= redBase.y - redBase.height / 2 &&
+          this.oponent.x <= redBase.x + redBase.width / 2 && 
+          this.oponent.y <= redBase.y + redBase.height / 2 ) { 
+           // console.log("Oponent on base")
+
+           server.sendOnBase("blue");
+        }
+      }
 
     }
 
     this.player.work_update();
   }
+
 
 }

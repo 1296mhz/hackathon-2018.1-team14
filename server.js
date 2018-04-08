@@ -179,6 +179,23 @@ class ClientState {
         this.socket.on('spawnMob', (msg)=>{
             broadcast('spawnMobFromServer', msg);
         });
+
+        this.socket.on('sendOnBase', (msg)=>{
+            console.log("sendOnBase", msg)
+            if(msg.cmd === "red") {
+                this.game_state.red_data.hp_max += this.game_state.red_data.crystal;
+                this.game_state.red_data.crystal = 0;
+                this.game_state.red_data.hp = this.game_state.red_data.hp_max;
+            } else {
+                this.game_state.blue_data.hp_max += this.game_state.blue_data.crystal;
+                this.game_state.blue_data.crystal = 0;
+                this.game_state.blue_data.hp = this.game_state.blue_data.hp_max;
+            }
+
+            broadcast('updateHeath', {
+                state: this.game_state.toJSON()
+            });
+        })
         
     }
 

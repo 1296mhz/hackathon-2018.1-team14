@@ -1,10 +1,5 @@
 import throttle from 'lodash.throttle';
 import Tank from '../objects/Tank';
-import Crystal from '../objects/Crystal';
-
-Array.prototype.randomElement = function () {
-  return this[Math.floor(Math.random() * this.length)]
-}
 
 /**
  * Setup and display the main game state.
@@ -28,12 +23,9 @@ export default class Main extends Phaser.State {
     // Enable arcade physics.
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    this.game.world.setBounds(-1000, -1000, 2000, 2000);
+    this.game.world.setBounds(0, 0, 1920, 1920);
 
     const dpr = Math.round(window.devicePixelRatio);
-
-    const width = window.innerWidth * window.devicePixelRatio;
-    const height = window.innerHeight * window.devicePixelRatio;
 
     // Add background tile.
     this.land = this.game.add.tilemap('tilemap');
@@ -47,17 +39,14 @@ export default class Main extends Phaser.State {
     this.ground = this.land.createLayer('ground');
     this.buildings = this.land.createLayer('buildings');
     this.obstacles = this.land.createLayer('obstacles');
-    this.base = this.land.createLayer('base');
-    this.railways = this.land.createLayer('railways');
-
-    this.maxCrystals = 10;
-
-    this.crystals = [];
+    this.base = this.land.createLayer('bases');
+    this.railways = this.land.createLayer('lakes');
 
     const server = this.game.server;
 
     this.land.setCollisionByExclusion([], true, this.obstacles);
     this.land.setCollisionByExclusion([], true, this.buildings);
+    
 
     this.objects = this.game.add.physicsGroup();
     this.land.createFromObjects('objects', '', 'fill', 1, true, false, this.objects, Phaser.Sprite, false);
@@ -121,8 +110,6 @@ export default class Main extends Phaser.State {
     
 
     this.game.camera.follow(this.player);
-    this.game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300);
-    this.game.camera.focusOnXY(0, 0);
 
     // Setup listener for window resize.
     window.addEventListener('resize', throttle(this.resize.bind(this), 50), false);
@@ -159,22 +146,6 @@ export default class Main extends Phaser.State {
         server.damage(server.getMyCommand() === "red" ? "blue" : "red");
       }
     }, null, this);
-
-    if(this.crystals.length < this.maxCrystals) {
-      const crTile = this.land.objects.crystalsSpawn.randomElement();
-      for(let i = 0; i < this.crystals.length; i++) {
-        if(this.crystals[i].x !== crTile.x || this.crystals[i].y !== crTile.y) {
-          const crystal = new Crystal({
-            game: this.game,
-            x: crTile.x,
-            y: crTile.y,
-            key: 'textures',
-            frame: 'crystal_1.png'
-          });
-          this.crystals.push(crystal);
-        }
-      }
-    }
 
     this.player.work_update();
   }

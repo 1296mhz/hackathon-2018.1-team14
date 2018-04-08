@@ -147,9 +147,9 @@ class ClientState {
         
         this.socket.on('damage', (msg)=>{
             if(msg.cmd === "red") {
-                this.game_state.red_data.hp -= 1;
+                this.game_state.red_data.hp -= 5;
             } else {
-                this.game_state.blue_data.hp -= 1;
+                this.game_state.blue_data.hp -= 5;
             }
 
             broadcast('damageFromServer', {

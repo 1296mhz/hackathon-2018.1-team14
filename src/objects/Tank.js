@@ -35,7 +35,7 @@ export default class Tank extends Phaser.Sprite {
     this.body.offset.x = 32;
     this.body.offset.y = 32;
 
-    this.fireRate = 500;
+    this.fireRate = 100;
     this.nextFire = 0;
 
     this.health = 100;
@@ -167,7 +167,7 @@ export default class Tank extends Phaser.Sprite {
     const bullet = this.bullets.getFirstExists(false);
     if(bullet) {
 
-      this.fire_music = game.add.audio('blip');
+      this.fire_music = game.add.audio('rosketlaunch');
       this.fire_music.play();
 
       bullet.reset(this.turret.x, this.turret.y);

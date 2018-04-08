@@ -35,15 +35,12 @@ export default class Menu extends Phaser.State {
         const server = this.game.server;
 
         server.on('onServerState', ()=>{
-            console.log("onServerState");
             if(server.getMyCommand()) {
                 this.game.state.start('GameWait');
             } else {
                 this.initState(this.state);
             }
         });
-
-        console.log("ClientId", server.getClientID());
 
         // Setup listener for window resize.
         window.addEventListener('resize', throttle(this.resize.bind(this), 50), false);
@@ -68,7 +65,6 @@ export default class Menu extends Phaser.State {
         switch(state) {
             case STATE_SELECT_STATE: {
                 this.title.setText("Start game");
-                // console.log(server.state)
                 if(!server.state.gameCreated) {
                     this.addButton("Create game", "create_game");
                 } else {

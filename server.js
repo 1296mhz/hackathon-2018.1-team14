@@ -133,7 +133,6 @@ class ClientState {
         });
 
         this.socket.on('takeCrysalis', (msg)=>{
-            console.log("takeCrysalis", msg)
             if(msg.cmd === "red") {
                 this.game_state.red_data.crystal += 1;
             } else {
@@ -181,7 +180,6 @@ class ClientState {
         });
 
         this.socket.on('sendOnBase', (msg)=>{
-            console.log("sendOnBase", msg)
             if(msg.cmd === "red") {
                 this.game_state.red_data.hp_max += this.game_state.red_data.crystal;
                 this.game_state.red_data.crystal = 0;

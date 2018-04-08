@@ -54,17 +54,11 @@ export default class Main extends Phaser.State {
     this.railways = this.land.createLayer('lakes');
 
     const server = this.game.server;
-
-    //console.log(this.land)
-
-
     this.maxMobs = 5;
     this.maxCrystals = 10;
     this.crystals = [];
     this.crysalis = [];
     this.mobs = [];
-
-
 
     this.objects = this.game.add.physicsGroup();
     this.land.createFromObjects('buildings', '', 'grass', 1, true, false, this.objects, Phaser.Sprite, false);
@@ -200,7 +194,6 @@ export default class Main extends Phaser.State {
 
 
     server.on('updateHeath', (data)=>{
-      console.log("updateHeath", data)
       if(server.getMyCommand() == "red") {
         this.player.health = server.state.red_data.hp;
         this.player.maxHealth = server.state.red_data.hp_max;
@@ -366,8 +359,6 @@ export default class Main extends Phaser.State {
           this.player.y >= redBase.y - redBase.height / 2 &&
           this.player.x <= redBase.x + redBase.width / 2 && 
           this.player.y <= redBase.y + redBase.height / 2 ) { 
-            //console.log("Player on base")
-
             server.sendOnBase("red");
         }
 
@@ -375,8 +366,6 @@ export default class Main extends Phaser.State {
           this.oponent.y >= baseBlue.y - baseBlue.height / 2 &&
           this.oponent.x <= baseBlue.x + baseBlue.width / 2 && 
           this.oponent.y <= baseBlue.y + baseBlue.height / 2 ) { 
-            //console.log("Oponent on base")
-
             server.sendOnBase("red");
         }
 
@@ -386,8 +375,6 @@ export default class Main extends Phaser.State {
           this.player.y >= baseBlue.y - baseBlue.height / 2 &&
           this.player.x <= baseBlue.x + baseBlue.width / 2 && 
           this.player.y <= baseBlue.y + baseBlue.height / 2 ) { 
-            //console.log("Player on base")
-
             server.sendOnBase("blue");
         } 
 
@@ -395,8 +382,6 @@ export default class Main extends Phaser.State {
           this.oponent.y >= redBase.y - redBase.height / 2 &&
           this.oponent.x <= redBase.x + redBase.width / 2 && 
           this.oponent.y <= redBase.y + redBase.height / 2 ) { 
-           // console.log("Oponent on base")
-
            server.sendOnBase("blue");
         }
       }

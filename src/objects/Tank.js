@@ -28,7 +28,6 @@ export default class Tank extends Phaser.Sprite {
 
     //this.shadow = this.game.add.sprite(x, y, 'tanks', 'shadow')
     this.turret = this.game.add.sprite(x, y, 'textures', 'head.png');
-    console.log(this);
     this.body.width = 64;
     this.body.height = 64;
     this.body.sourceWidth = 64;
@@ -132,8 +131,6 @@ export default class Tank extends Phaser.Sprite {
     this.turret.y = this.y;
 
     server.updateDriver(this.x, this.y, this.rotation, this.currentSpeed);
-
-   // console.log("Tank", this.x, this.y)
   }
 
   _updateGunner() {

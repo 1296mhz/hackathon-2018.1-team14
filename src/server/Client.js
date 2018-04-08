@@ -83,11 +83,9 @@ export default class Client extends EventEmitter {
     }
 
     onConnected() {
-        console.log("Connected to server")
     }
 
     isMasterClient() {
-        //console.log(this.state.clientOwner, this.socket.id)
         return this.state.clientOwner && this.state.clientOwner.id === this.socket.id;
     }
 

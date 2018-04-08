@@ -17,7 +17,8 @@ const AssetManifest = {
     'button_default',
     'moon',
     'fire',
-    'shot'
+    'shot',
+    'logo'
   ],
   audio: [
     'acidbomb',
@@ -50,6 +51,11 @@ const AssetManifest = {
         'Open Sans:300,700',
       ],
     },
+    custom: {
+      families: [
+        'sf_distant_galaxy-webfont'
+      ]
+    }
   },
 };
 

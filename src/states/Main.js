@@ -1,5 +1,6 @@
 import throttle from 'lodash.throttle';
 import Tank from '../objects/Tank';
+import Crystal from '../objects/Crystal';
 
 /**
  * Setup and display the main game state.
@@ -32,6 +33,7 @@ export default class Main extends Phaser.State {
     this.layer.resizeWorld();
     this.layer2.resizeWorld();
 
+    this.crystals = [];
 
     const server = this.game.server;
 
@@ -134,6 +136,8 @@ export default class Main extends Phaser.State {
         server.damage(server.getMyCommand() === "red" ? "blue" : "red");
       }
     }, null, this);
+
+
 
     this.player.work_update();
   }

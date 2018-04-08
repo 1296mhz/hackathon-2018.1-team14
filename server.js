@@ -39,12 +39,12 @@ class GameState {
         this.blue = [];
 
         this.red_data = {
-            hp : 1,
+            hp : 100,
             hp_max : 100
         };
 
         this.blue_data = {
-            hp : 1,
+            hp : 100,
             hp_max : 100
         };
 

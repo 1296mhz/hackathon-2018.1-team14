@@ -2,12 +2,16 @@ import throttle from 'lodash.throttle';
 import Tank from '../objects/Tank';
 import Crystal from '../objects/Crystal';
 
+Array.prototype.randomElement = function () {
+  return this[Math.floor(Math.random() * this.length)]
+}
+
 /**
  * Setup and display the main game state.
  */
 export default class Main extends Phaser.State {
   preload() {
-    this.game.load.tilemap('tilemap', 'dist/assets/battlefield2.json', null, Phaser.Tilemap.TILED_JSON);
+    this.game.load.tilemap('tilemap', 'dist/assets/battlefield3.json', null, Phaser.Tilemap.TILED_JSON);
     this.game.load.image('grass', 'dist/assets/grass.png');
     this.game.load.image('base', 'dist/assets/tile256_1.png');
     this.game.load.image('buildings', 'dist/assets/tile256_2.png');
@@ -28,8 +32,11 @@ export default class Main extends Phaser.State {
 
     const dpr = Math.round(window.devicePixelRatio);
 
+    const width = window.innerWidth * window.devicePixelRatio;
+    const height = window.innerHeight * window.devicePixelRatio;
+
     // Add background tile.
-    this.land = this.game.add.tilemap('tilemap', 32,32, 800, 600);
+    this.land = this.game.add.tilemap('tilemap');
     this.land.addTilesetImage('grass', 'grass');
     this.land.addTilesetImage('base', 'base');
     this.land.addTilesetImage('buildings', 'buildings');
@@ -43,13 +50,14 @@ export default class Main extends Phaser.State {
     this.base = this.land.createLayer('base');
     this.railways = this.land.createLayer('railways');
 
+    this.maxCrystals = 10;
+
     this.crystals = [];
 
     const server = this.game.server;
 
     this.land.setCollisionByExclusion([], true, this.obstacles);
     this.land.setCollisionByExclusion([], true, this.buildings);
-    
 
     this.objects = this.game.add.physicsGroup();
     this.land.createFromObjects('objects', '', 'fill', 1, true, false, this.objects, Phaser.Sprite, false);
@@ -152,7 +160,21 @@ export default class Main extends Phaser.State {
       }
     }, null, this);
 
-
+    if(this.crystals.length < this.maxCrystals) {
+      const crTile = this.land.objects.crystalsSpawn.randomElement();
+      for(let i = 0; i < this.crystals.length; i++) {
+        if(this.crystals[i].x !== crTile.x || this.crystals[i].y !== crTile.y) {
+          const crystal = new Crystal({
+            game: this.game,
+            x: crTile.x,
+            y: crTile.y,
+            key: 'textures',
+            frame: 'crystal_1.png'
+          });
+          this.crystals.push(crystal);
+        }
+      }
+    }
 
     this.player.work_update();
   }

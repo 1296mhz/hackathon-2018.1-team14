@@ -40,13 +40,6 @@
     "no-unneeded-ternary": ["warn", {"defaultAssignment": true}],
     "no-whitespace-before-property": "error",
     "object-curly-spacing": ["warn", "never"],
-    "require-jsdoc": ["error", {
-        "require": {
-            "FunctionDeclaration": true,
-            "MethodDefinition": true,
-            "ClassDeclaration": true
-        }
-    }],
     "spaced-comment": ["error", "always", {
         "line": {
             "markers": ["/"],
@@ -62,14 +55,6 @@
     "space-before-function-paren": ["error", "never"],
     "space-in-parens": ["error", "never"],
     "no-param-reassign": 0,
-    "jsdoc/check-param-names": 1,
-    "jsdoc/check-tag-names": 1,
-    "jsdoc/newline-after-description": ["warn", "never"],
-    "jsdoc/require-description-complete-sentence": 1,
-    "jsdoc/require-param": 1,
-    "jsdoc/require-param-type": 1,
-    "jsdoc/require-returns-type": 1,
-    "no-underscore-dangle": 0,
     "arrow-body-style": 0
   }
 }

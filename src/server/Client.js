@@ -146,12 +146,13 @@ export default class Client extends EventEmitter {
         });
     }
 
-    updateDriver(x, y, angle) {
+    updateDriver(x, y, angle, velocity) {
         this.socket.emit("updateDriver", {
             id : this.socket.id,
-            x: x,
-            y: y,
-            angle: angle,
+            x,
+            y,
+            angle,
+            velocity, 
             role : this.getMyRole(),
             cmd : this.getMyCommand()
         });
@@ -160,7 +161,7 @@ export default class Client extends EventEmitter {
     updateGunner(angle) {
         this.socket.emit("updateGunner", {
             id : this.socket.id,
-            angle: angle,
+            angle,
             role : this.getMyRole(),
             cmd : this.getMyCommand()
         });

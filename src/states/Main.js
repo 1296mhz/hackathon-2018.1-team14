@@ -7,10 +7,14 @@ import Crystal from '../objects/Crystal';
  */
 export default class Main extends Phaser.State {
   preload() {
-    this.game.load.tilemap('tilemap', 'dist/assets/battlefield.json', null, Phaser.Tilemap.TILED_JSON);
+    this.game.load.tilemap('tilemap', 'dist/assets/battlefield2.json', null, Phaser.Tilemap.TILED_JSON);
     this.game.load.image('grass', 'dist/assets/grass.png');
-    this.game.load.image('items', 'dist/assets/sheet.png');
-    this.game.load.image('fill', 'dist/assets/bg.png');
+    this.game.load.image('base', 'dist/assets/tile256_1.png');
+    this.game.load.image('buildings', 'dist/assets/tile256_2.png');
+    this.game.load.image('lake', 'dist/assets/tile512_1.png');
+    this.game.load.image('lake2', 'dist/assets/tile512_2.png');
+    this.game.load.image('railways', 'dist/assets/tilelong.png');
+    this.game.load.image('tilels', 'dist/assets/tilels.png');
     this.game.load.image('bullet', 'dist/assets/bullet.png');
   }
   /**
@@ -25,17 +29,27 @@ export default class Main extends Phaser.State {
     const dpr = Math.round(window.devicePixelRatio);
 
     // Add background tile.
-    this.land = this.game.add.tilemap('tilemap', 32, 32, 800, 600);
-    this.land.addTilesetImage('grassembed', 'grass');
-    this.land.addTilesetImage('itemsembed', 'items');
-    this.layer = this.land.createLayer('layer');
-    this.layer2 = this.land.createLayer('items');
-    this.layer.resizeWorld();
-    this.layer2.resizeWorld();
+    this.land = this.game.add.tilemap('tilemap', 32,32, 800, 600);
+    this.land.addTilesetImage('grass', 'grass');
+    this.land.addTilesetImage('base', 'base');
+    this.land.addTilesetImage('buildings', 'buildings');
+    this.land.addTilesetImage('lake', 'lake');
+    this.land.addTilesetImage('lake2', 'lake2');
+    this.land.addTilesetImage('railways', 'railways');
+    this.land.addTilesetImage('tilels', 'tilels');
+    this.ground = this.land.createLayer('ground');
+    this.buildings = this.land.createLayer('buildings');
+    this.obstacles = this.land.createLayer('obstacles');
+    this.base = this.land.createLayer('base');
+    this.railways = this.land.createLayer('railways');
 
     this.crystals = [];
 
     const server = this.game.server;
+
+    this.land.setCollisionByExclusion([], true, this.obstacles);
+    this.land.setCollisionByExclusion([], true, this.buildings);
+    
 
     this.objects = this.game.add.physicsGroup();
     this.land.createFromObjects('objects', '', 'fill', 1, true, false, this.objects, Phaser.Sprite, false);
@@ -120,7 +134,8 @@ export default class Main extends Phaser.State {
    * Handle actions in the main game loop.
    */
   update() {
-    this.game.physics.arcade.collide(this.player, this.objects);
+    this.game.physics.arcade.collide(this.player, this.buildings);
+    this.game.physics.arcade.collide(this.player, this.obstacles);
     const server = this.game.server;
 
     this.game.physics.arcade.overlap(this.oponent.bullets, this.player, (tank, bullet)=>{

@@ -40,12 +40,14 @@ class GameState {
 
         this.red_data = {
             hp : 100,
-            hp_max : 100
+            hp_max : 100,
+            crystal : 0
         };
 
         this.blue_data = {
             hp : 100,
-            hp_max : 100
+            hp_max : 100,
+            crystal : 0
         };
 
         this.win = null;
@@ -118,15 +120,38 @@ class ClientState {
             broadcast('fireFromServer', msg);
         });
 
+        this.socket.on('spawnCrystal', (msg)=>{
+            broadcast('spawnCrystalFromServer', msg);
+        });
+
+        this.socket.on('damageCrystal', (msg)=>{
+            broadcast('damageCrystalFromServer', {
+                cmd: msg.cmd,
+                pos: msg.pos,
+                state: this.game_state.toJSON()
+            });
+        });
+
+        this.socket.on('takeCrysalis', (msg)=>{
+            console.log("takeCrysalis", msg)
+            if(msg.cmd === "red") {
+                this.game_state.red_data.crystal += 1;
+            } else {
+                this.game_state.blue_data.crystal += 1;
+            }
+            broadcast('takeCrysalisFromServer', {
+                cmd: msg.cmd,
+                pos: msg.pos,
+                state: this.game_state.toJSON()
+            });
+        });
+        
         this.socket.on('damage', (msg)=>{
             if(msg.cmd === "red") {
                 this.game_state.red_data.hp -= 1;
             } else {
                 this.game_state.blue_data.hp -= 1;
             }
-
-            console.log("red", this.game_state.red_data)
-            console.log("blue", this.game_state.blue_data)
 
             broadcast('damageFromServer', {
                 cmd : msg.cmd,

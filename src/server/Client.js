@@ -69,7 +69,10 @@ export default class Client extends EventEmitter {
             this.state.blue_data = data.state.blue_data;
             this.emit('takeCrysalisFromServer', data);
         });
-        
+
+        this.socket.on("spawnMobFromServer", (data)=>{
+            this.emit('spawnMobFromServer', data);
+        });
     }
 
     onConnected() {
@@ -198,6 +201,13 @@ export default class Client extends EventEmitter {
             id : this.socket.id,
             cmd : cmd,
             pos: pos
+        }); 
+    }
+
+    spawnMob(x, y) {
+        this.socket.emit("spawnMob", {
+            id : this.socket.id,
+            x : x, y : y
         }); 
     }
 };

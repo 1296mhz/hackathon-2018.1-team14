@@ -2,6 +2,7 @@ import throttle from 'lodash.throttle';
 import Tank from '../objects/Tank';
 import Crystal from '../objects/Crystal';
 import Crysalis from '../objects/Crysalis';
+import Mob from '../objects/Mob';
 
 /**
  * Setup and display the main game state.
@@ -44,14 +45,17 @@ export default class Main extends Phaser.State {
 
     const server = this.game.server;
 
-    //console.log(this.base)
 
     this.land.setCollisionByExclusion([], true, this.obstacles);
     this.land.setCollisionByExclusion([], true, this.buildings);
 
+    this.maxMobs = 5;
     this.maxCrystals = 10;
     this.crystals = [];
     this.crysalis = [];
+    this.mobs = [];
+
+
 
     this.objects = this.game.add.physicsGroup();
     this.land.createFromObjects('objects', '', 'fill', 1, true, false, this.objects, Phaser.Sprite, false);
@@ -173,6 +177,20 @@ export default class Main extends Phaser.State {
 
     });
 
+
+    server.on('spawnMobFromServer', (data)=>{
+      const mob = new Crystal({
+        game: this.game,
+        x: data.x,
+        y: data.y,
+        key: 'textures',
+        frame: 'creep_1_1_b.png'
+      });
+      this.mobs.push(mob);
+    });
+
+    // 
+
     this.game.camera.follow(this.player);
 
     // Setup listener for window resize.
@@ -266,6 +284,19 @@ export default class Main extends Phaser.State {
 
     if(server.isMasterClient()) {
     
+      if(this.mobs.length < this.maxMobs) {
+        const crTile = this.land.objects.crystals[Math.floor(Math.random() * this.land.objects.crystals.length)];
+        if(this.mobs.length > 0) {
+          for(let i = 0; i < this.mobs.length; i++) {
+            if(this.mobs[i].x !== crTile.x || this.mobs[i].y !== crTile.y) {
+              server.spawnMob(Math.floor(crTile.x), Math.floor(crTile.y));
+              break;
+            }
+          }
+        } else {
+          server.spawnMob(Math.floor(crTile.x), Math.floor(crTile.y));
+        }
+      }
 
       if(this.crystals.length < this.maxCrystals) {
         const crTile = this.land.objects.crystals[Math.floor(Math.random() * this.land.objects.crystals.length)];
@@ -273,12 +304,15 @@ export default class Main extends Phaser.State {
           for(let i = 0; i < this.crystals.length; i++) {
             if(this.crystals[i].x !== crTile.x || this.crystals[i].y !== crTile.y) {
               server.spawnCrystal(Math.floor(crTile.x), Math.floor(crTile.y));
+              break;
             }
           }
         } else {
           server.spawnCrystal(Math.floor(crTile.x), Math.floor(crTile.y));
         }
       }
+
+
     }
 
     this.player.work_update();

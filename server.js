@@ -175,6 +175,11 @@ class ClientState {
                 });
             }
         });
+
+        this.socket.on('spawnMob', (msg)=>{
+            broadcast('spawnMobFromServer', msg);
+        });
+        
     }
 
     
